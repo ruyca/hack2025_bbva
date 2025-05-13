@@ -1,0 +1,555 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		F27BF0442DD322AB00803BA9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F27BF02E2DD322A900803BA9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F27BF0352DD322A900803BA9;
+			remoteInfo = BBVA_MiPyMES;
+		};
+		F27BF04E2DD322AB00803BA9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F27BF02E2DD322A900803BA9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F27BF0352DD322A900803BA9;
+			remoteInfo = BBVA_MiPyMES;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F27BF0362DD322A900803BA9 /* BBVA_MiPyMES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BBVA_MiPyMES.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F27BF0432DD322AB00803BA9 /* BBVA_MiPyMESTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BBVA_MiPyMESTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F27BF04D2DD322AB00803BA9 /* BBVA_MiPyMESUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BBVA_MiPyMESUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F27BF0382DD322A900803BA9 /* BBVA_MiPyMES */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = BBVA_MiPyMES;
+			sourceTree = "<group>";
+		};
+		F27BF0462DD322AB00803BA9 /* BBVA_MiPyMESTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = BBVA_MiPyMESTests;
+			sourceTree = "<group>";
+		};
+		F27BF0502DD322AB00803BA9 /* BBVA_MiPyMESUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = BBVA_MiPyMESUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F27BF0332DD322A900803BA9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F27BF0402DD322AB00803BA9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F27BF04A2DD322AB00803BA9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F27BF02D2DD322A900803BA9 = {
+			isa = PBXGroup;
+			children = (
+				F27BF0382DD322A900803BA9 /* BBVA_MiPyMES */,
+				F27BF0462DD322AB00803BA9 /* BBVA_MiPyMESTests */,
+				F27BF0502DD322AB00803BA9 /* BBVA_MiPyMESUITests */,
+				F27BF0372DD322A900803BA9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F27BF0372DD322A900803BA9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F27BF0362DD322A900803BA9 /* BBVA_MiPyMES.app */,
+				F27BF0432DD322AB00803BA9 /* BBVA_MiPyMESTests.xctest */,
+				F27BF04D2DD322AB00803BA9 /* BBVA_MiPyMESUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F27BF0352DD322A900803BA9 /* BBVA_MiPyMES */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F27BF0572DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "BBVA_MiPyMES" */;
+			buildPhases = (
+				F27BF0322DD322A900803BA9 /* Sources */,
+				F27BF0332DD322A900803BA9 /* Frameworks */,
+				F27BF0342DD322A900803BA9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F27BF0382DD322A900803BA9 /* BBVA_MiPyMES */,
+			);
+			name = BBVA_MiPyMES;
+			packageProductDependencies = (
+			);
+			productName = BBVA_MiPyMES;
+			productReference = F27BF0362DD322A900803BA9 /* BBVA_MiPyMES.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F27BF0422DD322AB00803BA9 /* BBVA_MiPyMESTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F27BF05A2DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "BBVA_MiPyMESTests" */;
+			buildPhases = (
+				F27BF03F2DD322AB00803BA9 /* Sources */,
+				F27BF0402DD322AB00803BA9 /* Frameworks */,
+				F27BF0412DD322AB00803BA9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F27BF0452DD322AB00803BA9 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F27BF0462DD322AB00803BA9 /* BBVA_MiPyMESTests */,
+			);
+			name = BBVA_MiPyMESTests;
+			packageProductDependencies = (
+			);
+			productName = BBVA_MiPyMESTests;
+			productReference = F27BF0432DD322AB00803BA9 /* BBVA_MiPyMESTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F27BF04C2DD322AB00803BA9 /* BBVA_MiPyMESUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F27BF05D2DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "BBVA_MiPyMESUITests" */;
+			buildPhases = (
+				F27BF0492DD322AB00803BA9 /* Sources */,
+				F27BF04A2DD322AB00803BA9 /* Frameworks */,
+				F27BF04B2DD322AB00803BA9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F27BF04F2DD322AB00803BA9 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F27BF0502DD322AB00803BA9 /* BBVA_MiPyMESUITests */,
+			);
+			name = BBVA_MiPyMESUITests;
+			packageProductDependencies = (
+			);
+			productName = BBVA_MiPyMESUITests;
+			productReference = F27BF04D2DD322AB00803BA9 /* BBVA_MiPyMESUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F27BF02E2DD322A900803BA9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+					F27BF0352DD322A900803BA9 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					F27BF0422DD322AB00803BA9 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = F27BF0352DD322A900803BA9;
+					};
+					F27BF04C2DD322AB00803BA9 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = F27BF0352DD322A900803BA9;
+					};
+				};
+			};
+			buildConfigurationList = F27BF0312DD322A900803BA9 /* Build configuration list for PBXProject "BBVA_MiPyMES" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F27BF02D2DD322A900803BA9;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F27BF0372DD322A900803BA9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F27BF0352DD322A900803BA9 /* BBVA_MiPyMES */,
+				F27BF0422DD322AB00803BA9 /* BBVA_MiPyMESTests */,
+				F27BF04C2DD322AB00803BA9 /* BBVA_MiPyMESUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F27BF0342DD322A900803BA9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F27BF0412DD322AB00803BA9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F27BF04B2DD322AB00803BA9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F27BF0322DD322A900803BA9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F27BF03F2DD322AB00803BA9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F27BF0492DD322AB00803BA9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F27BF0452DD322AB00803BA9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F27BF0352DD322A900803BA9 /* BBVA_MiPyMES */;
+			targetProxy = F27BF0442DD322AB00803BA9 /* PBXContainerItemProxy */;
+		};
+		F27BF04F2DD322AB00803BA9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F27BF0352DD322A900803BA9 /* BBVA_MiPyMES */;
+			targetProxy = F27BF04E2DD322AB00803BA9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F27BF0552DD322AB00803BA9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F27BF0562DD322AB00803BA9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F27BF0582DD322AB00803BA9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ruycabello.BBVA-MiPyMES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F27BF0592DD322AB00803BA9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ruycabello.BBVA-MiPyMES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F27BF05B2DD322AB00803BA9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ruycabello.BBVA-MiPyMESTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BBVA_MiPyMES.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BBVA_MiPyMES";
+			};
+			name = Debug;
+		};
+		F27BF05C2DD322AB00803BA9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ruycabello.BBVA-MiPyMESTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BBVA_MiPyMES.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BBVA_MiPyMES";
+			};
+			name = Release;
+		};
+		F27BF05E2DD322AB00803BA9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ruycabello.BBVA-MiPyMESUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BBVA_MiPyMES;
+			};
+			name = Debug;
+		};
+		F27BF05F2DD322AB00803BA9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ruycabello.BBVA-MiPyMESUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BBVA_MiPyMES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F27BF0312DD322A900803BA9 /* Build configuration list for PBXProject "BBVA_MiPyMES" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F27BF0552DD322AB00803BA9 /* Debug */,
+				F27BF0562DD322AB00803BA9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F27BF0572DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "BBVA_MiPyMES" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F27BF0582DD322AB00803BA9 /* Debug */,
+				F27BF0592DD322AB00803BA9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F27BF05A2DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "BBVA_MiPyMESTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F27BF05B2DD322AB00803BA9 /* Debug */,
+				F27BF05C2DD322AB00803BA9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F27BF05D2DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "BBVA_MiPyMESUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F27BF05E2DD322AB00803BA9 /* Debug */,
+				F27BF05F2DD322AB00803BA9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F27BF02E2DD322A900803BA9 /* Project object */;
+}

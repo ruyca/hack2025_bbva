@@ -3,11 +3,14 @@
 //  BBVA_MiPyMES
 //
 //  Created by Ruy Cabello on 13/05/25.
+
 import SwiftUI
 
 struct BancarizarView: View {
     @ObservedObject var viewModel: UserViewModel
     @State private var showOnboarding: Bool = false
+    @State private var showCelebration: Bool = false
+    @State private var previousCompletionState: Bool = false
     
     var body: some View {
         ZStack {
@@ -22,7 +25,7 @@ struct BancarizarView: View {
                         .padding(.horizontal)
                         .animation(.easeInOut, value: viewModel.user.progressPercentage)
                     
-                    Text("Registration Progress: \(Int(viewModel.user.progressPercentage * 100))%")
+                    Text("Progreso: \(Int(viewModel.user.progressPercentage * 100))%")
                         .font(.subheadline)
                         .foregroundColor(.gray)
                 }
@@ -36,12 +39,61 @@ struct BancarizarView: View {
                                 isCompleted: isStepCompleted(step),
                                 toggleStep: {
                                     viewModel.toggleStep(step: step)
+                                    
+                                    // Check if all steps are now completed
+                                    if viewModel.user.isRegistrationComplete && !previousCompletionState {
+                                        withAnimation {
+                                            showCelebration = true
+                                        }
+                                        
+                                        // Schedule to hide the celebration after a delay
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                            withAnimation {
+                                                showCelebration = false
+                                            }
+                                        }
+                                    }
+                                    
+                                    // Update the previous state
+                                    previousCompletionState = viewModel.user.isRegistrationComplete
                                 }
                             )
                         }
+                        
+                        // Add space at the bottom for the floating button
+                        Spacer(minLength: 70)
                     }
                     .padding()
                 }
+            }
+            
+            // Completion button that appears when all steps are completed
+            if viewModel.user.isRegistrationComplete {
+                VStack {
+                    Spacer()
+                    
+                    NavigationLink(destination: HomeView2()) {
+                        Text("Completar Registro")
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue) // Or Color("appPrimaryBlue")
+                            .cornerRadius(10)
+                            .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 2)
+                            .padding(.horizontal)
+                    }
+                    .padding(.bottom, 20)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+                .animation(.spring(response: 0.5, dampingFraction: 0.7), value: viewModel.user.isRegistrationComplete)
+            }
+            
+            // Celebration animation overlay
+            if showCelebration {
+                CelebrationView()
+                    .transition(.opacity)
+                    .zIndex(2)
             }
             
             // Show onboarding only if the user hasn't seen it
@@ -63,14 +115,17 @@ struct BancarizarView: View {
         .onAppear {
             // Check if we need to show onboarding
             showOnboarding = !viewModel.user.hasSeenOnboarding
+            // Initialize the previous state
+            previousCompletionState = viewModel.user.isRegistrationComplete
         }
-        .navigationBarTitle("Registration", displayMode: .inline)
+        .navigationBarTitle("Registro", displayMode: .inline)
         // For testing - add a way to reset progress and show onboarding again
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     viewModel.resetProgress()
                     showOnboarding = true
+                    previousCompletionState = false
                 }) {
                     Image(systemName: "arrow.clockwise")
                 }
@@ -92,6 +147,88 @@ struct BancarizarView: View {
         }
     }
 }
+
+// MARK: - Celebration Animation View
+struct CelebrationView: View {
+    @State private var particles: [ConfettiParticle] = []
+    let colors: [Color] = [.blue, .green, .yellow, .red, .purple, .orange]
+    
+    init() {
+        // Create a bunch of particles with random positions
+        var initialParticles: [ConfettiParticle] = []
+        for _ in 0..<100 {
+            initialParticles.append(ConfettiParticle(
+                position: CGPoint(
+                    x: CGFloat.random(in: 0...UIScreen.main.bounds.width),
+                    y: -20
+                ),
+                color: colors.randomElement() ?? .blue,
+                angle: Double.random(in: -Double.pi/4...Double.pi/4),
+                scale: CGFloat.random(in: 0.5...1.5)
+            ))
+        }
+        _particles = State(initialValue: initialParticles)
+    }
+    
+    var body: some View {
+        ZStack {
+            // Semi-transparent background
+            Color.black.opacity(0.2)
+                .edgesIgnoringSafeArea(.all)
+            
+            // Confetti particles
+            ForEach(particles) { particle in
+                Rectangle()
+                    .fill(particle.color)
+                    .frame(width: 10, height: 10)
+                    .scaleEffect(particle.scale)
+                    .rotationEffect(Angle(radians: particle.angle))
+                    .position(particle.position)
+            }
+            
+            // Success message
+            VStack {
+                Text("¡Felicidades!")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .shadow(radius: 5)
+                
+                Text("Has completado todos los pasos")
+                    .font(.title2)
+                    .foregroundColor(.white)
+                    .shadow(radius: 3)
+                    .padding(.top, 5)
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 15)
+                    .fill(Color.blue.opacity(0.8))
+                    .shadow(radius: 10)
+            )
+            .scaleEffect(1.2)
+        }
+        .onAppear {
+            // Animate particles falling when the view appears
+            withAnimation(Animation.easeOut(duration: 3.0)) {
+                for i in particles.indices {
+                    particles[i].position.y = UIScreen.main.bounds.height + 20
+                    particles[i].angle += Double.random(in: -Double.pi...Double.pi)
+                }
+            }
+        }
+    }
+}
+
+// Model for confetti particles
+struct ConfettiParticle: Identifiable {
+    let id = UUID()
+    var position: CGPoint
+    let color: Color
+    var angle: Double
+    let scale: CGFloat
+}
+
 
 // MARK: - Progress Bar View
 struct ProgressBarView: View {
@@ -162,19 +299,19 @@ struct RegistrationStepView: View {
     private func stepDescription(for step: Int) -> String {
         switch step {
         case 1:
-            return "Verifica tu identidad subiendo una identificación oficial vigente"
+            return "Recibir autorización de la Secretaría de Economía para usar el nombre."
         case 2:
-            return "Comprueba tu domicilio con un comprobante reciente"
+            return "Elaborar el acta constitutiva de la empresa con ayuda de un notario."
         case 3:
-            return "Completa tu información personal y datos de contacto"
+            return "Hacer el aviso de uso de denominación."
         case 4:
-            return "Ingresa los detalles de tu actividad económica y negocio"
+            return "Inscribirse en el Registro Público de Comercio."
         case 5:
-            return "Define tus preferencias bancarias y servicios deseados"
+            return "Inscribirse en el Registro Federal de Contribuyentes."
         case 6:
-            return "Revisa y acepta los términos y condiciones del servicio"
+            return "Registrarse ante el IMSS."
         case 7:
-            return "Programa una cita con un ejecutivo para finalizar el proceso"
+            return "Darse de alta en los demás organismos requeridos."
         default:
             return "Completa el paso \(step) del proceso de registro"
         }

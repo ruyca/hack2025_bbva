@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct SplashScreenView: View {
-    //Control de etapas
+    
+    //Estados existentes
     @State private var currentStage = 0
-    //Animaciones
     @State private var barsHeight: [CGFloat] = [10, 30, 50, 20]
     @State private var logoOffset: CGFloat = 0
     @State private var logoScale: CGFloat = 1.2
+    @State private var showText = false
     
     let stageIcons = ["CashLaunchScreen", "chart.bar.fill", "CompanyLaunchScreen"]
     
@@ -21,13 +22,12 @@ struct SplashScreenView: View {
         ZStack {
             Color(.backgroundApp)
             
-            //Contenido de las etapas
             Group {
                 if currentStage == 0 {
                     Image(stageIcons[0])
                         .resizable()
                         .scaledToFit()
-                     
+                       
                     
                 } else if currentStage == 1 {
                     HStack(alignment: .bottom, spacing: 20) {
@@ -42,11 +42,9 @@ struct SplashScreenView: View {
                     Image(stageIcons[2])
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 300, height: 340)
                 }
             }
             .padding(.top, 50)
-            
             
             Image("LogoBBVALaunch")
                 .resizable()
@@ -54,6 +52,16 @@ struct SplashScreenView: View {
                 .frame(width: 250)
                 .scaleEffect(logoScale)
                 .offset(y: logoOffset)
+            
+            if showText {
+                Text("MiPyMEs")
+                    .font(.title)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                    .transition(.opacity)
+                    .offset(y: -185)
+                    .animation(.easeInOut(duration: 0.5), value: showText)
+            }
         }
         .ignoresSafeArea()
         .onAppear {
@@ -63,16 +71,17 @@ struct SplashScreenView: View {
                 logoOffset = -250
             }
             
-            //2.Mostrar contenido de la etapa 0
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                withAnimation(.easeIn(duration: 0.2)) {
+            //2.Mostrar contenido y texto después de que el logo suba
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                withAnimation(.easeIn(duration: 0.5)) {
+                    showText = true
                 }
                 
                 //3.Transición a etapa 1 (barras)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                     withAnimation {
                         currentStage = 1
-                        withAnimation(.easeInOut(duration: 1.5)) {
+                        withAnimation(.easeInOut(duration: 0.5)) {
                             barsHeight = [120, 180, 150, 200]
                         }
                     }

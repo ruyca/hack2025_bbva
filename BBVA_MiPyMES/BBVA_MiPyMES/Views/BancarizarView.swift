@@ -3,7 +3,6 @@
 //  BBVA_MiPyMES
 //
 //  Created by Ruy Cabello on 13/05/25.
-
 import SwiftUI
 
 struct BancarizarView: View {
@@ -56,7 +55,8 @@ struct BancarizarView: View {
                                     
                                     // Update the previous state
                                     previousCompletionState = viewModel.user.isRegistrationComplete
-                                }
+                                },
+                                viewModel: viewModel // Pass the viewModel
                             )
                         }
                         
@@ -148,6 +148,103 @@ struct BancarizarView: View {
     }
 }
 
+// MARK: - Registration Step View
+struct RegistrationStepView: View {
+    let step: Int
+    let isCompleted: Bool
+    let toggleStep: () -> Void
+    @ObservedObject var viewModel: UserViewModel
+    
+    var body: some View {
+        HStack {
+            // Navigation link to step detail view
+            NavigationLink(destination: destinationView(for: step)) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Paso \(step)")
+                        .font(.headline)
+                        .foregroundColor(isCompleted ? .green : .primary)
+                    
+                    Text(stepDescription(for: step))
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .buttonStyle(PlainButtonStyle()) // Use default text style without link styling
+            
+            Spacer()
+            
+            // Checkbox remains separate from the navigation
+            Button(action: toggleStep) {
+                ZStack {
+                    Circle()
+                        .stroke(isCompleted ? Color.green : Color.gray, lineWidth: 2)
+                        .frame(width: 28, height: 28)
+                    
+                    if isCompleted {
+                        Image(systemName: "checkmark")
+                            .foregroundColor(.green)
+                            .font(.system(size: 14, weight: .bold))
+                    }
+                }
+            }
+            .buttonStyle(PlainButtonStyle())
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color.white)
+                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+        )
+    }
+    
+    // Function to return the appropriate view based on step number
+    @ViewBuilder
+    private func destinationView(for step: Int) -> some View {
+        switch step {
+        case 1:
+            DenominacionView_1(viewModel: viewModel)
+        case 2:
+            ActaConstitutivaView_2(viewModel: viewModel)
+        case 3:
+            AvisoDenominacionView_3(viewModel: viewModel)
+        case 4:
+            RegistroComercioView_4(viewModel: viewModel)
+        case 5:
+            RfcView_5(viewModel: viewModel)
+        case 6:
+            ImmsView_6(viewModel: viewModel)
+        case 7:
+            ExtrasView_7(viewModel: viewModel)
+        default:
+            EmptyView()
+        }
+    }
+    
+    // Function to return specific description for each step
+    private func stepDescription(for step: Int) -> String {
+        switch step {
+        case 1:
+            return "Recibir autorización de la Secretaría de Economía para usar el nombre"
+        case 2:
+            return "Elaborar el acta constitutiva de la empresa con ayuda de un notario"
+        case 3:
+            return "Hacer el aviso de uso de denominación"
+        case 4:
+            return "Inscribirse en el Registro Público de Comercio."
+        case 5:
+            return "Inscribirse en el Registro Federal de Contribuyentes"
+        case 6:
+            return "Registrarse ante el IMSS."
+        case 7:
+            return "Darse de alta en los demás organismos requeridos."
+        default:
+            return "Completa el paso \(step) del proceso de registro"
+        }
+    }
+}
+
+
+
 // MARK: - Celebration Animation View
 struct CelebrationView: View {
     @State private var particles: [ConfettiParticle] = []
@@ -230,6 +327,7 @@ struct ConfettiParticle: Identifiable {
 }
 
 
+
 // MARK: - Progress Bar View
 struct ProgressBarView: View {
     var progress: Float
@@ -251,73 +349,6 @@ struct ProgressBarView: View {
         }
     }
 }
-
-// MARK: - Registration Step View
-struct RegistrationStepView: View {
-    let step: Int
-    let isCompleted: Bool
-    let toggleStep: () -> Void
-    
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Paso \(step)")
-                    .font(.headline)
-                    .foregroundColor(isCompleted ? .green : .primary)
-                
-                Text(stepDescription(for: step))
-                    .font(.body)
-                    .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-            
-            Button(action: toggleStep) {
-                ZStack {
-                    Circle()
-                        .stroke(isCompleted ? Color.green : Color.gray, lineWidth: 2)
-                        .frame(width: 28, height: 28)
-                    
-                    if isCompleted {
-                        Image(systemName: "checkmark")
-                            .foregroundColor(.green)
-                            .font(.system(size: 14, weight: .bold))
-                    }
-                }
-            }
-            .buttonStyle(PlainButtonStyle())
-        }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 10)
-                .fill(Color.white)
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-        )
-    }
-    
-    // Function to return specific description for each step
-    private func stepDescription(for step: Int) -> String {
-        switch step {
-        case 1:
-            return "Recibir autorización de la Secretaría de Economía para usar el nombre."
-        case 2:
-            return "Elaborar el acta constitutiva de la empresa con ayuda de un notario."
-        case 3:
-            return "Hacer el aviso de uso de denominación."
-        case 4:
-            return "Inscribirse en el Registro Público de Comercio."
-        case 5:
-            return "Inscribirse en el Registro Federal de Contribuyentes."
-        case 6:
-            return "Registrarse ante el IMSS."
-        case 7:
-            return "Darse de alta en los demás organismos requeridos."
-        default:
-            return "Completa el paso \(step) del proceso de registro"
-        }
-    }
-}
-
 
 // MARK: - Onboarding View (Carousel)
 struct OnboardingView: View {

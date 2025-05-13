@@ -7,8 +7,23 @@
 
 import SwiftUI
 
+// MARK: - Home View (Destination after registration)
 struct HomeView2: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            Text("¡Bienvenido!")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .padding(.bottom, 10)
+            
+            Text("Has completado tu registro exitosamente")
+                .font(.title2)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+            
+            Spacer()
+        }
+        .padding(.top, 50)
+        .navigationBarTitle("Inicio", displayMode: .inline)
     }
 }

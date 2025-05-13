@@ -9,9 +9,14 @@ import SwiftUI
 
 @main
 struct BBVA_MiPyMESApp: App {
+    // Create a shared instance of UserViewModel that can be used throughout the app
+    @StateObject private var userViewModel = UserViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationView {
+                BancarizarView(viewModel: userViewModel)
+            }
         }
     }
 }

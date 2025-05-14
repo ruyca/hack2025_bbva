@@ -18,7 +18,7 @@ class UserViewModel: ObservableObject {
     let onboardingPages = [
         OnboardingPage(title: "Bienvenido", description: "Bancarizarse nunca ha sido tan fácil", image: "bbva_logo3"),
         OnboardingPage(title: "Registra tu progreso", description: "Nuestra interfaz step-by-step te ayuda a reunir los pasos necesarios para formalizar tu negocio.", image: "registrar_progreso"),
-        OnboardingPage(title: "¿Necesitas ayuda?", description: "Pregúntale a JIMMY nuestro asistente virtual.", image: "Jimmy")
+        OnboardingPage(title: "¿Necesitas ayuda?", description: "Pregúntale a Pym nuestro asistente virtual.", image: "Jimmy")
     ]
     
     init(user: UserModel = UserModel()) {

@@ -119,15 +119,24 @@ struct BancarizarView: View {
             previousCompletionState = viewModel.user.isRegistrationComplete
         }
         .navigationBarTitle("Registro", displayMode: .inline)
-        // For testing - add a way to reset progress and show onboarding again
+        // Toolbar with reset button and chat button
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    viewModel.resetProgress()
-                    showOnboarding = true
-                    previousCompletionState = false
-                }) {
-                    Image(systemName: "arrow.clockwise")
+                HStack(spacing: 16) {
+                    // Chat button
+                    NavigationLink(destination: ChatView()) {
+                        Image(systemName: "message.fill")
+                            .foregroundColor(.primary)
+                    }
+                    
+                    // Reset button
+                    Button(action: {
+                        viewModel.resetProgress()
+                        showOnboarding = true
+                        previousCompletionState = false
+                    }) {
+                        Image(systemName: "arrow.clockwise")
+                    }
                 }
             }
         }
@@ -242,9 +251,6 @@ struct RegistrationStepView: View {
         }
     }
 }
-
-
-
 // MARK: - Celebration Animation View
 struct CelebrationView: View {
     @State private var particles: [ConfettiParticle] = []
@@ -325,8 +331,6 @@ struct ConfettiParticle: Identifiable {
     var angle: Double
     let scale: CGFloat
 }
-
-
 
 // MARK: - Progress Bar View
 struct ProgressBarView: View {
@@ -439,11 +443,3 @@ struct OnboardingPageView: View {
     }
 }
 
-// MARK: - Preview
-struct BancarizarView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            BancarizarView(viewModel: UserViewModel())
-        }
-    }
-}

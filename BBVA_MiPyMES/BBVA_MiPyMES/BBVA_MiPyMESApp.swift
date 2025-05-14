@@ -25,7 +25,7 @@ struct BBVA_MiPyMESApp: App {
                             }
                         }
                 } else {
-                    OtherView()
+                    FinancialHealth()
                 }
             }
             .ignoresSafeArea()

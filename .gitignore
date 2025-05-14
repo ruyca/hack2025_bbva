@@ -60,3 +60,10 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+.DS_Store
+	BBVA_MiPyMES/.DS_Store
+	BBVA_MiPyMES/BBVA_MiPyMES.xcodeproj/
+	BBVA_MiPyMES/BBVA_MiPyMES/.DS_Store
+	BBVA_MiPyMES/BBVA_MiPyMES/Models/.DS_Store
+BBVA_MiPyMES/BBVA_MiPyMES.xcodeproj/

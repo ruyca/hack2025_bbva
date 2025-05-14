@@ -11,10 +11,28 @@ struct BBVAMiPyMEsApp: App {
         FirebaseApp.configure()
     }
     
+struct BBVA_MiPyMESApp: App {
+    @State private var showLaunchScreen = true //Control de aparición
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(authViewModel)
+            ZStack {
+                if showLaunchScreen {
+                    SplashScreenView()
+                        .onAppear {
+                            //Temporizador para ocultar la launch screen después de X segundos
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
+                                withAnimation {
+                                    showLaunchScreen = false
+                                }
+                            }
+                        }
+                } else {
+                     ContentView()
+                    .environmentObject(authViewModel)
+                }
+            }
+            .ignoresSafeArea()
         }
     }
 }

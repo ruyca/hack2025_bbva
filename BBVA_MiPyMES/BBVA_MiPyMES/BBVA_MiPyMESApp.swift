@@ -12,8 +12,6 @@ struct BBVAMiPyMEsApp: App {
     }
     
 struct BBVA_MiPyMESApp: App {
-    @State private var showLaunchScreen = true //Control de aparición
-    
     var body: some Scene {
         WindowGroup {
             ZStack {

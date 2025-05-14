@@ -3,6 +3,7 @@
 //  BBVA_MiPyMES
 //
 //  Created by Ruy Cabello on 13/05/25.
+
 import SwiftUI
 
 struct BancarizarView: View {
@@ -12,81 +13,22 @@ struct BancarizarView: View {
     @State private var previousCompletionState: Bool = false
     
     var body: some View {
-        ZStack {
-            // Main content background
-            Color.white.edgesIgnoringSafeArea(.all)
+        ZStack(alignment: .top) {
+            // Background layers
+            BackgroundLayerView()
             
-            VStack(spacing: 20) {
-                // Progress Bar at the top
-                if !showOnboarding {
-                    ProgressBarView(progress: viewModel.user.progressPercentage)
-                        .frame(height: 10)
-                        .padding(.horizontal)
-                        .animation(.easeInOut, value: viewModel.user.progressPercentage)
-                    
-                    Text("Progreso: \(Int(viewModel.user.progressPercentage * 100))%")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                }
-                
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        // Display the 7 registration steps
-                        ForEach(1...7, id: \.self) { step in
-                            RegistrationStepView(
-                                step: step,
-                                isCompleted: isStepCompleted(step),
-                                toggleStep: {
-                                    viewModel.toggleStep(step: step)
-                                    
-                                    // Check if all steps are now completed
-                                    if viewModel.user.isRegistrationComplete && !previousCompletionState {
-                                        withAnimation {
-                                            showCelebration = true
-                                        }
-                                        
-                                        // Schedule to hide the celebration after a delay
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                            withAnimation {
-                                                showCelebration = false
-                                            }
-                                        }
-                                    }
-                                    
-                                    // Update the previous state
-                                    previousCompletionState = viewModel.user.isRegistrationComplete
-                                },
-                                viewModel: viewModel // Pass the viewModel
-                            )
-                        }
-                        
-                        // Add space at the bottom for the floating button
-                        Spacer(minLength: 70)
-                    }
-                    .padding()
-                }
+            // Main content
+            if !showOnboarding {
+                MainContentView(
+                    viewModel: viewModel,
+                    showCelebration: $showCelebration,
+                    previousCompletionState: $previousCompletionState
+                )
             }
             
-            // Completion button that appears when all steps are completed
+            // Floating completion button
             if viewModel.user.isRegistrationComplete {
-                VStack {
-                    Spacer()
-                    
-                    NavigationLink(destination: HomeView2()) {
-                        Text("Completar Registro")
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue) // Or Color("appPrimaryBlue")
-                            .cornerRadius(10)
-                            .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 2)
-                            .padding(.horizontal)
-                    }
-                    .padding(.bottom, 20)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                }
-                .animation(.spring(response: 0.5, dampingFraction: 0.7), value: viewModel.user.isRegistrationComplete)
+                CompletionButtonView()
             }
             
             // Celebration animation overlay
@@ -118,7 +60,10 @@ struct BancarizarView: View {
             // Initialize the previous state
             previousCompletionState = viewModel.user.isRegistrationComplete
         }
-        .navigationBarTitle("Registro", displayMode: .inline)
+        .navigationBarTitle("", displayMode: .inline)
+        .navigationBarBackButtonHidden(false)
+        .toolbarBackground(.hidden, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         // Toolbar with reset button and chat button
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -126,7 +71,7 @@ struct BancarizarView: View {
                     // Chat button
                     NavigationLink(destination: ChatView()) {
                         Image(systemName: "message.fill")
-                            .foregroundColor(.primary)
+                            .foregroundColor(.white)
                     }
                     
                     // Reset button
@@ -136,10 +81,133 @@ struct BancarizarView: View {
                         previousCompletionState = false
                     }) {
                         Image(systemName: "arrow.clockwise")
+                            .foregroundColor(.white)
                     }
                 }
             }
         }
+    }
+}
+
+// MARK: - Background Layer View
+struct BackgroundLayerView: View {
+    var body: some View {
+        // Main content background
+        Color.white.edgesIgnoringSafeArea(.all)
+        
+        // Blue header background that extends to top edge
+        VStack {
+            Color("primaryBlue")
+                .frame(height: 150)
+                .edgesIgnoringSafeArea(.top)
+            Spacer()
+        }
+    }
+}
+
+// MARK: - Main Content View
+struct MainContentView: View {
+    @ObservedObject var viewModel: UserViewModel
+    @Binding var showCelebration: Bool
+    @Binding var previousCompletionState: Bool
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            // Header with title
+            HeaderView(progress: viewModel.user.progressPercentage)
+            
+            // Registration steps content
+            RegistrationStepsView(
+                viewModel: viewModel,
+                showCelebration: $showCelebration,
+                previousCompletionState: $previousCompletionState
+            )
+        }
+    }
+}
+
+// MARK: - Header View
+struct HeaderView: View {
+    var progress: Float
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            Text("Formalización Empresarial")
+                .font(.title3)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+                .padding(.top, 55)
+            
+            // Progress Bar in white container with shadow
+            VStack(spacing: 5) {
+                ProgressBarView(progress: progress)
+                    .frame(height: 10)
+                    .padding(.horizontal)
+                    .animation(.easeInOut, value: progress)
+                
+                Text("Progreso: \(Int(progress * 100))%")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.white)
+                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+            )
+            .padding(.horizontal)
+        }
+        .padding(.bottom, 10)
+    }
+}
+
+// MARK: - Registration Steps View
+struct RegistrationStepsView: View {
+    @ObservedObject var viewModel: UserViewModel
+    @Binding var showCelebration: Bool
+    @Binding var previousCompletionState: Bool
+    
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                // Display the 7 registration steps
+                ForEach(1...7, id: \.self) { step in
+                    RegistrationStepView(
+                        step: step,
+                        isCompleted: isStepCompleted(step),
+                        toggleStep: {
+                            viewModel.toggleStep(step: step)
+                            
+                            // Check if all steps are now completed
+                            if viewModel.user.isRegistrationComplete && !previousCompletionState {
+                                withAnimation {
+                                    showCelebration = true
+                                }
+                                
+                                // Schedule to hide the celebration after a delay
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                    withAnimation {
+                                        showCelebration = false
+                                    }
+                                }
+                            }
+                            
+                            // Update the previous state
+                            previousCompletionState = viewModel.user.isRegistrationComplete
+                        },
+                        viewModel: viewModel // Pass the viewModel
+                    )
+                }
+                
+                // Add space at the bottom for the floating button
+                Spacer(minLength: 70)
+            }
+            .padding(.horizontal)
+            .padding(.top, 15)
+        }
+        .background(Color.white)
+        .cornerRadius(20, corners: [.topLeft, .topRight])
+        .padding(.top, -12)
     }
     
     // Helper function to check if a step is completed
@@ -154,6 +222,30 @@ struct BancarizarView: View {
         case 7: return viewModel.user.q7Completed
         default: return false
         }
+    }
+}
+
+// MARK: - Completion Button View
+struct CompletionButtonView: View {
+    var body: some View {
+        VStack {
+            Spacer()
+            
+            NavigationLink(destination: HomeView2()) {
+                Text("Completar Registro")
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.green)
+                    .cornerRadius(10)
+                    .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 2)
+                    .padding(.horizontal)
+            }
+            .padding(.bottom, 20)
+            .transition(.move(edge: .bottom).combined(with: .opacity))
+        }
+        .animation(.spring(response: 0.5, dampingFraction: 0.7), value: true)
     }
 }
 
@@ -251,6 +343,29 @@ struct RegistrationStepView: View {
         }
     }
 }
+
+// MARK: - Progress Bar View
+struct ProgressBarView: View {
+    var progress: Float
+    
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack(alignment: .leading) {
+                // Background
+                Rectangle()
+                    .foregroundColor(Color(.systemGray5))
+                    .cornerRadius(10)
+                
+                // Progress
+                Rectangle()
+                    .foregroundColor(Color.green)
+                    .cornerRadius(10)
+                    .frame(width: CGFloat(progress) * geometry.size.width)
+            }
+        }
+    }
+}
+
 // MARK: - Celebration Animation View
 struct CelebrationView: View {
     @State private var particles: [ConfettiParticle] = []
@@ -332,27 +447,13 @@ struct ConfettiParticle: Identifiable {
     let scale: CGFloat
 }
 
-// MARK: - Progress Bar View
-struct ProgressBarView: View {
-    var progress: Float
-    
-    var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .leading) {
-                // Background
-                Rectangle()
-                    .foregroundColor(Color(.systemGray5))
-                    .cornerRadius(10)
-                
-                // Progress
-                Rectangle()
-                    .foregroundColor(.blue)
-                    .cornerRadius(10)
-                    .frame(width: CGFloat(progress) * geometry.size.width)
-            }
-        }
+// Extension to support rounded corners on specific edges
+extension View {
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCornerShape(radius: radius, corners: corners))
     }
 }
+
 
 // MARK: - Onboarding View (Carousel)
 struct OnboardingView: View {
@@ -442,4 +543,3 @@ struct OnboardingPageView: View {
         .padding(.vertical, 8)
     }
 }
-

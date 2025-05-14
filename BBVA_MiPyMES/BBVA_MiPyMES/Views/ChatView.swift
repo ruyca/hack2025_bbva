@@ -4,6 +4,7 @@
 //
 //  Created by Ruy Cabello on 13/05/25.
 //
+
 import SwiftUI
 
 struct ChatView: View {
@@ -13,98 +14,88 @@ struct ChatView: View {
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Blue header
-            VStack(spacing: 0) {
-                HStack {
-                    Image("Jimmy")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 40, height: 40)
-                        .clipShape(Circle())
-                        .overlay(Circle().stroke(Color.white, lineWidth: 2))
-                    
-                    Text("Pym - Asistente BBVA")
-                        .font(.title3)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                    
-                    Spacer()
-                }
-                .padding(.horizontal)
-                .padding(.top, 60) // Adjust for safe area
-                .padding(.bottom, 20)
+        ZStack(alignment: .top) {
+            // Blue header background that extends to top edge
+            VStack {
+                Color("primaryBlue")
+                    .frame(height: 150)
+                    .edgesIgnoringSafeArea(.top)
+                Spacer()
             }
-            .background(Color("primaryBlue"))
-            .edgesIgnoringSafeArea(.top)
             
-            // Chat content
+            // Main content
             VStack(spacing: 0) {
-                // Messages area
-                ScrollViewReader { scrollView in
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 10) {
-                            ForEach(chatViewModel.messages) { message in
-                                MessageBubble(message: message)
-                                    .id(message.id)
+                // Header title
+                VStack {
+                    Spacer().frame(height: 55)
+                    HStack {
+                        Image("Jimmy") // The AI assistant image
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
+                            .clipShape(Circle())
+                            .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                        
+                        Text("Pym - Asistente BBVA")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                        
+                        Spacer()
+                        
+                        // Removed the clear history button from header since we now have it at the bottom
+                    }
+                }
+                .frame(height: 120)
+                .padding(.horizontal)
+                
+                // Chat content area with white background and rounded corners
+                VStack {
+                    // Messages area
+                    ScrollViewReader { scrollView in
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: 10) {
+                                ForEach(chatViewModel.messages) { message in
+                                    MessageBubble(message: message)
+                                        .id(message.id)
+                                }
                             }
-                        }
-                        .padding()
-                        .onChange(of: chatViewModel.messages.count) { _ in
-                            if let lastMessage = chatViewModel.messages.last {
-                                withAnimation {
-                                    scrollView.scrollTo(lastMessage.id, anchor: .bottom)
+                            .padding()
+                            .onChange(of: chatViewModel.messages.count) { _ in
+                                if let lastMessage = chatViewModel.messages.last {
+                                    withAnimation {
+                                        scrollView.scrollTo(lastMessage.id, anchor: .bottom)
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                
-                Divider()
-                
-                // Input area
-                HStack {
-                    TextField("Escribe tu mensaje...", text: $currentMessageText)
-                        .padding()
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(12)
                     
-                    Button(action: {
-                        send()
-                    }) {
-                        Image(systemName: "paperplane.fill")
-                            .padding(12)
-                            .background(Color("primaryBlue"))
-                            .foregroundColor(.white)
+                    Divider()
+                    
+                    // Input area
+                    HStack {
+                        TextField("Escribe tu mensaje...", text: $currentMessageText)
+                            .padding()
+                            .background(Color.gray.opacity(0.1))
                             .cornerRadius(12)
-                    }
-                    .disabled(currentMessageText.isEmpty)
-                }
-                .padding(.horizontal)
-                .padding(.top, 5)
-                
-                // Clear history button
-                HStack {
-                    Spacer()
-                    
-                    Button(action: {
-                        showingClearConfirmation = true
-                    }) {
-                        HStack {
-                            Image(systemName: "trash")
-                                .font(.footnote)
-                            Text("Borrar historial")
-                                .font(.footnote)
+                        
+                        Button(action: {
+                            send()
+                        }) {
+                            Image(systemName: "paperplane.fill")
+                                .padding(12)
+                                .background(Color("primaryBlue"))
+                                .foregroundColor(.white)
+                                .cornerRadius(12)
                         }
-                        .padding(.vertical, 6)
-                        .padding(.horizontal, 10)
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
-                        .foregroundColor(.red.opacity(0.8))
+                        .disabled(currentMessageText.isEmpty)
                     }
-                    .padding(.trailing)
-                    .padding(.vertical, 10)
+                    .padding()
                 }
+                .background(Color.white)
+                .clipShape(RoundedCornerShape(radius: 20, corners: [.topLeft, .topRight]))
+                .padding(.top, -20)
             }
         }
         .navigationBarTitle("", displayMode: .inline)
@@ -183,3 +174,4 @@ struct MessageBubble: View {
         return formatter.string(from: date)
     }
 }
+

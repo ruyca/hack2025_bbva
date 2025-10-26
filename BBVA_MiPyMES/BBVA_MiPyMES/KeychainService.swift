@@ -10,7 +10,7 @@ class KeychainService {
     
     // The key format for storing biometric flags in the keychain
     private func biometricKey(for userID: String) -> String {
-        return "com.bbva.mipymes.biometric.\(userID)"
+        return "com.BBVA.mipymes.biometric.\(userID)"
     }
     
     // Check if biometrics are enabled for a specific user

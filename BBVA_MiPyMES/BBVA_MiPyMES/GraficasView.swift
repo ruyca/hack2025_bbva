@@ -1,10 +1,4 @@
 //
-//  GraficasView.swift
-//  BBVA_MiPyMES
-//
-//  Created by Carolina Sotelo on 13/05/25.
-//
-
 import SwiftUI
 import Charts
 

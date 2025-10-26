@@ -48,7 +48,7 @@ struct LoginFieldsView: View {
                 Text("Ingresa tus credenciales")
                     .font(.title2)
                     .fontWeight(.semibold)
-                    .foregroundColor(Color("BBVATextColor"))
+                    .foregroundColor(Color.BBVATextPrimary)
                     .padding(.bottom)
 
                 TextField("Correo electrónico", text: $authViewModel.email)
@@ -64,7 +64,7 @@ struct LoginFieldsView: View {
 
                 if let errorMessage = authViewModel.errorMessage {
                     Text(errorMessage)
-                        .foregroundColor(Color("BBVAErrorRed"))
+                        .foregroundColor(Color.BBVAError)
                         .font(.caption)
                         .multilineTextAlignment(.center)
                 }
@@ -111,29 +111,33 @@ struct LoginView: View {
     // New state variable for the language sheet
     @State private var showingLanguageSheet = false
     
-    // Define BBVA brand colors
-    let bbvaPrimaryBlue = Color("BBVAPrimaryBlue")
-    let bbvaDarkBlue = Color("BBVADarkBlue")
+    // Define BBVA brand colors (Modern Fintech)
+    let BBVAPrimaryRed = Color.BBVAPrimaryRed
+    let BBVACharcoal = Color.BBVACharcoal
     
     var body: some View {
         ZStack {
-            // Background with gradient
-            bbvaPrimaryBlue
-                .ignoresSafeArea()
+            // Background with gradient - Modern Blue
+            LinearGradient(
+                gradient: Gradient(colors: [Color.BBVAPrimaryRed, Color.BBVADarkRed]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
             
             // Background city image with opacity
             Image("Bellasartes")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
-                .opacity(0.15)
+                .opacity(0.1)
             
             // Content
             VStack(spacing: 0) {
                 // Top white space
                 
                 
-                // BBVA Logo centered in blue bar
+                // BBVA Logo centered
                 ZStack {
                     Rectangle()
                         .opacity(0)
@@ -142,44 +146,53 @@ struct LoginView: View {
                     Text("BBVA")
                         .font(.system(size: 42, weight: .bold))
                         .foregroundColor(.white)
+                        .tracking(2)
                     
                     
                     
-                    Text("Bienvenido a Impulsa")
-                        .font(.system(size: 30, ))
-                        .foregroundColor(.white).padding(.top, 100)
+                    Text("Tu aliado financiero")
+                        .font(.system(size: 30))
+                        .foregroundColor(.white.opacity(0.9)).padding(.top, 100)
                 }
                 
                 // Main content area
                 VStack(spacing: 32) { // Increased spacing slightly
                     Spacer().frame(height: 160)
                     
-                    // Login button
+                    // Login button - Modernizado
                     Button {
                         showingLoginSheet = true
                     } label: {
-                        Text("Iniciar sesión")
-                            .font(.headline)
-                            .foregroundColor(bbvaPrimaryBlue)
-                            .frame(maxWidth: .infinity)
-                            .padding(16)
-                            .background(Color.white)
+                        HStack {
+                            Text("Iniciar sesión")
+                                .font(.system(size: 17, weight: .semibold))
+                            Image(systemName: "arrow.right")
+                                .font(.system(size: 14, weight: .semibold))
+                        }
+                        .foregroundColor(Color.BBVABlue)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.white)
+                                .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
+                        )
                     }
-                    .padding(.horizontal, 400) // This horizontal padding seems very large, adjust if needed
+                    .padding(.horizontal, 32)
                     
                     // Registration text
-                    Text("Si ya eres cliente de BBVA pero no eres usuario online.")
-                        .font(.footnote)
-                        .foregroundColor(.white)
+                    Text("¿Primera vez en BBVA? Crea tu cuenta en minutos.")
+                        .font(.system(size: 14))
+                        .foregroundColor(.white.opacity(0.9))
                         .multilineTextAlignment(.center)
+                        .padding(.horizontal, 32)
                     
                     // Create access link
                     Button {
                         showingRegistrationSheet = true
                     } label: {
-                        Text("Crear clave de acceso")
-                            .font(.footnote)
-                            .fontWeight(.medium)
+                        Text("Crear cuenta")
+                            .font(.system(size: 15, weight: .medium))
                             .foregroundColor(.white)
                             .underline()
                     }
@@ -188,11 +201,11 @@ struct LoginView: View {
                     
                     // Quick links section and Language button
                     VStack(spacing: 24) { // Vertical stack for bottom elements
-                        // Quick links
+                        // Quick links - Actualizados
                         HStack(spacing: 36) {
-                            QuickLinkView(iconName: "building.columns.fill", label: "Oficinas y cajeros")
-                            QuickLinkView(iconName: "house.fill", label: "BBVA valora casas")
-                            QuickLinkView(iconName: "car.fill", label: "BBVA valora coches")
+                            QuickLinkView(iconName: "building.2.fill", label: "Oficinas")
+                            QuickLinkView(iconName: "chart.line.uptrend.xyaxis", label: "Inversiones")
+                            QuickLinkView(iconName: "creditcard.fill", label: "Tarjetas")
                         }
                         .padding(.horizontal) // Add some horizontal padding if needed
                         
@@ -298,19 +311,20 @@ struct LanguageSelectionSheet: View {
 }
 
 
-// MARK: - Custom Styles (remain unchanged)
+// MARK: - Custom Styles (Modern BBVA)
 
 // Custom text field style for BBVA app
 struct BBVATextFieldStyle: TextFieldStyle {
     func _body(configuration: TextField<Self._Label>) -> some View {
         configuration
-            .padding()
-            .background(Color.white.opacity(0.1))
-            .cornerRadius(8)
+            .padding(14)
+            .background(Color.white.opacity(0.15))
+            .cornerRadius(10)
             .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.white.opacity(0.3), lineWidth: 1.5)
             )
+            .foregroundColor(.white)
     }
 }
 
@@ -318,31 +332,11 @@ struct BBVATextFieldStyle: TextFieldStyle {
 struct BBVAButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .padding()
-            .background(configuration.isPressed ? Color("BBVAPrimaryBlue").opacity(0.8) : Color("BBVAPrimaryBlue"))
+            .padding(14)
+            .background(configuration.isPressed ? Color.BBVABlue.opacity(0.9) : Color.BBVABlue)
             .foregroundColor(.white)
             .cornerRadius(8)
             .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
-    }
-}
-
-// MARK: - Helper Extensions (remain unchanged)
-
-// Extension to create rounded corners only on specific corners
-extension View {
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape(RoundedCorner(radius: radius, corners: corners))
-    }
-}
-
-// Custom shape for specific corner rounding
-struct RoundedCorner: Shape {
-    var radius: CGFloat = .infinity
-    var corners: UIRectCorner = .allCorners
-    
-    func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
-        return Path(path.cgPath)
     }
 }
 
@@ -378,7 +372,7 @@ struct LoginView_Previews: PreviewProvider {
          // Placeholder login logic
          currentState = .authenticating
          DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { // Simulate network delay
-             if self.email == "test@bbva.com" && self.password == "password" {
+             if self.email == "test@BBVA.com" && self.password == "password" {
                  self.isAuthenticated = true
                  self.currentState = .success
                  self.errorMessage = nil

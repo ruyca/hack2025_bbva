@@ -1,10 +1,3 @@
-//
-//  UserViewModel.swift
-//  BBVA_MiPyMES
-//
-//  Created by Ruy Cabello on 13/05/25.
-//
-
 
 import Foundation
 import SwiftUI
@@ -16,7 +9,7 @@ class UserViewModel: ObservableObject {
     
     // Content for onboarding carousel
     let onboardingPages = [
-        OnboardingPage(title: "Bienvenido", description: "Bancarizarse nunca ha sido tan fácil", image: "bbva_logo3"),
+        OnboardingPage(title: "Bienvenido", description: "Bancarizarse nunca ha sido tan fácil", image: "BBVA_logo3"),
         OnboardingPage(title: "Registra tu progreso", description: "Nuestra interfaz step-by-step te ayuda a reunir los pasos necesarios para formalizar tu negocio.", image: "registrar_progreso"),
         OnboardingPage(title: "¿Necesitas ayuda?", description: "Pregúntale a Pym nuestro asistente virtual.", image: "Jimmy")
     ]

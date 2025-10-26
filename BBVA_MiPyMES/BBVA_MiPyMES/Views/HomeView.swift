@@ -2,26 +2,32 @@ import SwiftUI
 import Firebase
 
 struct HomeView: View {
-    // Environment object for authentication
+    // Environment objects
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var homeViewModel: HomeViewModel
     
-    // State object for home data
-    @StateObject private var homeViewModel = HomeViewModel()
-    
-    // Colores BBVA
-    let bbvaBlue = Color(red: 0.004, green: 0.345, blue: 0.663)
-    let bbvaDarkBlue = Color(red: 0, green: 0.216, blue: 0.416)
-    let bbvaLightBlue = Color(red: 0.188, green: 0.573, blue: 0.851)
-    let bbvaAqua = Color(red: 0, green: 0.8, blue: 0.8)
-    let bbvaBackground = Color(red: 0.95, green: 0.97, blue: 0.98)
+    // Usar colores globales de BBVA
+    let BBVABlue = Color.BBVAPrimaryRed
+    let BBVABackground = Color.BBVABackground
     
     // Estado para la selección del tab
     @State private var selectedTab = 0
     
+    // Estados de animación
+    @State private var cardsAppeared = false
+    
     var body: some View {
         ZStack {
-            // Fondo
-            bbvaBackground.edgesIgnoringSafeArea(.all)
+            // Fondo con gradiente sutil
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.BBVABackground,
+                    Color.BBVALightBlue.opacity(0.3)
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .edgesIgnoringSafeArea(.all)
             
             // Content or loading indicator
             if homeViewModel.isLoading {
@@ -59,6 +65,11 @@ struct HomeView: View {
             Task {
                 await homeViewModel.fetchData()
             }
+            
+            // Animación de entrada
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                cardsAppeared = true
+            }
         }
     }
     
@@ -68,39 +79,70 @@ struct HomeView: View {
             headerView
             
             // Scroll View para el contenido principal
-            ScrollView {
-                VStack(spacing: 24) {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 20) {
                     // Tarjeta de saldo
                     balanceCard
+                        .offset(y: cardsAppeared ? 0 : 20)
+                        .opacity(cardsAppeared ? 1 : 0)
+                        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: cardsAppeared)
                     
                     // Accesos rápidos
                     quickActionsView
+                        .offset(y: cardsAppeared ? 0 : 20)
+                        .opacity(cardsAppeared ? 1 : 0)
+                        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2), value: cardsAppeared)
                     
                     // Transacciones recientes
                     recentTransactionsView
+                        .offset(y: cardsAppeared ? 0 : 20)
+                        .opacity(cardsAppeared ? 1 : 0)
+                        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.3), value: cardsAppeared)
                     
                     // Estadísticas
                     businessStatsView
+                        .offset(y: cardsAppeared ? 0 : 20)
+                        .opacity(cardsAppeared ? 1 : 0)
+                        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.4), value: cardsAppeared)
                     
                     // Productos
                     productsView
+                        .offset(y: cardsAppeared ? 0 : 20)
+                        .opacity(cardsAppeared ? 1 : 0)
+                        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.5), value: cardsAppeared)
                     
                     Button(action: {
                         authViewModel.signOut()
                     }) {
-                        Text("Cerrar Sesión")
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(bbvaBlue)
-                            .cornerRadius(8)
+                        HStack {
+                            Image(systemName: "arrow.right.square.fill")
+                                .font(.system(size: 20))
+                            
+                            Text("Cerrar Sesión")
+                                .font(.system(size: 16, weight: .semibold))
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(
+                            LinearGradient(
+                                gradient: Gradient(colors: [
+                                    Color.BBVAPrimaryRed,
+                                    Color.BBVADarkRed
+                                ]),
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .cornerRadius(16)
+                        .shadow(color: Color.BBVAPrimaryRed.opacity(0.3), radius: 8, x: 0, y: 4)
                     }
                     .padding(.horizontal, 20)
-                    .padding(.top, 20)
+                    .padding(.top, 10)
                 }
-                .padding(.horizontal)
-                .padding(.bottom, 80)
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
+                .padding(.bottom, 100)
             }
             
             // Barra de navegación inferior
@@ -111,58 +153,80 @@ struct HomeView: View {
     // Vista del encabezado
     var headerView: some View {
         VStack(spacing: 0) {
-            HStack {
-                VStack(alignment: .leading) {
-                    Text(greeting)
-                        .font(.system(size: 16))
-                        .foregroundColor(.white.opacity(0.9))
-                    
-                    Text(homeViewModel.business?.name ?? "Mi Negocio")
-                        .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(.white)
-                }
+            ZStack {
+                // Gradiente de fondo
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color.BBVAPrimaryRed,
+                        Color.BBVADarkRed
+                    ]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
                 
-                Spacer()
-                
-                HStack(spacing: 16) {
-                    Button(action: {
-                        print("Search tapped")
-                    }) {
-                        Image(systemName: "magnifyingglass")
-                            .font(.system(size: 20))
+                HStack(alignment: .center) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(greeting)
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundColor(.white.opacity(0.85))
+                        
+                        Text(homeViewModel.business?.name ?? "Mi Negocio")
+                            .font(.system(size: 24, weight: .bold))
                             .foregroundColor(.white)
                     }
                     
-                    Button(action: {
-                        print("Notifications tapped")
-                    }) {
-                        Image(systemName: "bell")
-                            .font(.system(size: 20))
-                            .foregroundColor(.white)
+                    Spacer()
+                    
+                    HStack(spacing: 12) {
+                        Button(action: {
+                            print("Search tapped")
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.white.opacity(0.2))
+                                    .frame(width: 44, height: 44)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                    )
+                                
+                                Image(systemName: "magnifyingglass")
+                                    .font(.system(size: 18, weight: .medium))
+                                    .foregroundColor(.white)
+                            }
+                        }
+                        
+                        Button(action: {
+                            print("Notifications tapped")
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.white.opacity(0.2))
+                                    .frame(width: 44, height: 44)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                    )
+                                
+                                Image(systemName: "bell.fill")
+                                    .font(.system(size: 18, weight: .medium))
+                                    .foregroundColor(.white)
+                                
+                                // Badge de notificación
+                                Circle()
+                                    .fill(Color.BBVAError)
+                                    .frame(width: 10, height: 10)
+                                    .offset(x: 12, y: -12)
+                            }
+                        }
                     }
                 }
+                .padding(.horizontal, 20)
+                .padding(.top, 16)
+                .padding(.bottom, 24)
             }
-            .padding(.horizontal)
-            .padding(.top, 16)
-            .padding(.bottom, 16)
-            .background(bbvaBlue)
-            
-            // Logo de BBVA
-            HStack {
-                Image(systemName: "b.circle.fill")
-                    .font(.system(size: 26, weight: .bold))
-                    .foregroundColor(.white)
-                
-                Text("BBVA Negocios")
-                    .font(.system(size: 20, weight: .bold))
-                    .foregroundColor(.white)
-                
-                Spacer()
-            }
-            .padding(.horizontal)
-            .padding(.top, 8)
-            .padding(.bottom, 16)
-            .background(bbvaBlue)
+            .frame(height: 100)
+            .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 5)
         }
     }
     
@@ -181,66 +245,126 @@ struct HomeView: View {
     
     // Tarjeta de saldo
     var balanceCard: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Cuenta de negocios")
-                .font(.system(size: 16))
-                .foregroundColor(Color.gray.opacity(0.8))
+        ZStack {
+            // Fondo con gradiente sutil
+            RoundedRectangle(cornerRadius: 20)
+                .fill(
+                    LinearGradient(
+                        gradient: Gradient(colors: [
+                            Color.white,
+                            Color.BBVALightBlue.opacity(0.3)
+                        ]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
             
-            HStack(alignment: .firstTextBaseline) {
-                Text("$")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(bbvaDarkBlue)
-                
-                if let account = homeViewModel.account {
-                    let balanceComponents = formatBalance(account.balance)
+            VStack(alignment: .leading, spacing: 20) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Cuenta de negocios")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(Color.BBVATextSecondary)
+                        
+                        Text(homeViewModel.account?.accountNumberLastDigits ?? "**** ****")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundColor(Color.BBVAMediumGray)
+                            .tracking(1.5)
+                    }
                     
-                    Text(balanceComponents.integer)
-                        .font(.system(size: 32, weight: .bold))
-                        .foregroundColor(bbvaDarkBlue)
+                    Spacer()
                     
-                    Text(balanceComponents.decimal)
-                        .font(.system(size: 22, weight: .bold))
-                        .foregroundColor(bbvaDarkBlue)
-                } else {
-                    Text("--")
-                        .font(.system(size: 32, weight: .bold))
-                        .foregroundColor(bbvaDarkBlue)
+                    // Chip decorativo
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        Color.BBVATeal.opacity(0.3),
+                                        Color.BBVAPrimaryRed.opacity(0.2)
+                                    ]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 50, height: 40)
+                        
+                        Image(systemName: "chart.line.uptrend.xyaxis")
+                            .font(.system(size: 20))
+                            .foregroundColor(BBVABlue)
+                    }
                 }
                 
-                Spacer()
+                Divider()
+                    .background(Color.BBVALightGray)
+                
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                    Text("$")
+                        .font(.system(size: 26, weight: .bold))
+                        .foregroundColor(Color.BBVACharcoal)
+                    
+                    if let account = homeViewModel.account {
+                        let balanceComponents = formatBalance(account.balance)
+                        
+                        Text(balanceComponents.integer)
+                            .font(.system(size: 40, weight: .bold))
+                            .foregroundColor(Color.BBVACharcoal)
+                        
+                        Text(balanceComponents.decimal)
+                            .font(.system(size: 26, weight: .bold))
+                            .foregroundColor(Color.BBVADarkGray)
+                    } else {
+                        Text("--")
+                            .font(.system(size: 40, weight: .bold))
+                            .foregroundColor(Color.BBVACharcoal)
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        print("View account details")
+                    }) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.BBVATeal.opacity(0.15))
+                                .frame(width: 40, height: 40)
+                            
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(BBVABlue)
+                        }
+                    }
+                }
                 
                 Button(action: {
-                    print("View account details")
+                    print("View all transactions")
                 }) {
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(bbvaBlue)
+                    HStack {
+                        Image(systemName: "list.bullet.circle.fill")
+                            .font(.system(size: 20))
+                            .foregroundColor(BBVABlue)
+                        
+                        Text("Ver todos los movimientos")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundColor(BBVABlue)
+                        
+                        Spacer()
+                        
+                        Image(systemName: "arrow.right")
+                            .font(.system(size: 14))
+                            .foregroundColor(BBVABlue)
+                    }
+                    .padding(.vertical, 14)
+                    .padding(.horizontal, 16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.BBVATeal.opacity(0.1))
+                    )
                 }
             }
-            
-            Text(homeViewModel.account?.accountNumberLastDigits ?? "**** ****")
-                .font(.system(size: 16))
-                .foregroundColor(Color.gray)
-            
-            Divider()
-            
-            Button(action: {
-                print("View all transactions")
-            }) {
-                HStack {
-                    Text("Ver movimientos")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(bbvaBlue)
-                    
-                    Image(systemName: "list.bullet")
-                        .foregroundColor(bbvaBlue)
-                }
-            }
+            .padding(24)
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
-        .padding(.top, 16)
+        .shadow(color: Color.black.opacity(0.08), radius: 20, x: 0, y: 10)
     }
     
     // Helper to format balance
@@ -263,143 +387,199 @@ struct HomeView: View {
     
     // Accesos rápidos
     var quickActionsView: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 18) {
             Text("Acciones rápidas")
-                .font(.system(size: 18, weight: .bold))
-                .foregroundColor(bbvaDarkBlue)
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(Color.BBVACharcoal)
             
-            HStack(spacing: 20) {
-                actionButton(icon: "creditcard", text: "Cobrar", action: {
-                    print("Navigate to Payment view")
-                    selectedTab = 1 // Switch to the Cobrar tab
-                })
+            HStack(spacing: 16) {
+                actionButton(
+                    icon: "creditcard.fill",
+                    text: "Cobrar",
+                    color: Color.BBVATeal,
+                    action: {
+                        print("Navigate to Payment view")
+                        selectedTab = 1
+                    }
+                )
                 
-                actionButton(icon: "arrow.right", text: "Transferir", action: {
-                    print("Navigate to Transfer view")
-                    selectedTab = 2 // Switch to the Operar tab
-                })
+                actionButton(
+                    icon: "arrow.left.arrow.right",
+                    text: "Transferir",
+                    color: Color.BBVAPrimaryRed,
+                    action: {
+                        print("Navigate to Transfer view")
+                        selectedTab = 2
+                    }
+                )
                 
-                actionButton(icon: "doc.text", text: "Facturas", action: {
-                    print("Navigate to Invoices view")
-                })
+                actionButton(
+                    icon: "doc.text.fill",
+                    text: "Facturas",
+                    color: Color.BBVAOrange,
+                    action: {
+                        print("Navigate to Invoices view")
+                    }
+                )
                 
-                actionButton(icon: "qrcode", text: "QR", action: {
-                    print("Navigate to QR code view")
-                })
+                actionButton(
+                    icon: "qrcode.viewfinder",
+                    text: "QR",
+                    color: Color.BBVASuccess,
+                    action: {
+                        print("Navigate to QR code view")
+                    }
+                )
             }
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
+        .padding(24)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.white)
+        )
+        .shadow(color: Color.black.opacity(0.08), radius: 20, x: 0, y: 10)
     }
     
-    // Botones de acción
-    func actionButton(icon: String, text: String, action: @escaping () -> Void) -> some View {
+    // Botones de acción modernizados
+    func actionButton(icon: String, text: String, color: Color, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            VStack {
+            VStack(spacing: 12) {
                 ZStack {
-                    Circle()
-                        .fill(bbvaLightBlue.opacity(0.2))
-                        .frame(width: 60, height: 60)
+                    // Fondo con gradiente
+                    LinearGradient(
+                        gradient: Gradient(colors: [
+                            color.opacity(0.2),
+                            color.opacity(0.1)
+                        ]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                    .frame(width: 64, height: 64)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
                     
                     Image(systemName: icon)
-                        .font(.system(size: 22))
-                        .foregroundColor(bbvaBlue)
+                        .font(.system(size: 26, weight: .semibold))
+                        .foregroundColor(color)
                 }
                 
                 Text(text)
-                    .font(.system(size: 14))
-                    .foregroundColor(bbvaDarkBlue)
-                    .padding(.top, 8)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(Color.BBVATextPrimary)
+                    .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)
         }
+        .buttonStyle(PlainButtonStyle())
     }
     
     // Transacciones recientes
     var recentTransactionsView: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 18) {
             HStack {
                 Text("Movimientos recientes")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(bbvaDarkBlue)
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundColor(Color.BBVACharcoal)
                 
                 Spacer()
                 
                 Button(action: {
                     print("View all transactions")
                 }) {
-                    Text("Ver todos")
-                        .font(.system(size: 14))
-                        .foregroundColor(bbvaBlue)
+                    HStack(spacing: 4) {
+                        Text("Ver todos")
+                            .font(.system(size: 14, weight: .semibold))
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12, weight: .semibold))
+                    }
+                    .foregroundColor(BBVABlue)
                 }
             }
             
             if homeViewModel.recentTransactions.isEmpty {
-                Text("No hay movimientos recientes")
-                    .font(.system(size: 16))
-                    .foregroundColor(Color.gray)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.vertical, 20)
-            } else {
-                ForEach(Array(homeViewModel.recentTransactions.enumerated()), id: \.element.id) { index, transaction in
-                    if index > 0 {
-                        Divider()
-                    }
+                VStack(spacing: 12) {
+                    Image(systemName: "tray")
+                        .font(.system(size: 40))
+                        .foregroundColor(Color.BBVAMediumGray)
                     
-                    transactionItem(
-                        name: transaction.description,
-                        desc: transaction.category ?? "Movimiento",
-                        amount: formatAmount(transaction.amount),
-                        date: formatDate(transaction.date),
-                        isIncoming: transaction.type == .income
-                    )
+                    Text("No hay movimientos recientes")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(Color.BBVATextSecondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 30)
+            } else {
+                VStack(spacing: 0) {
+                    ForEach(Array(homeViewModel.recentTransactions.enumerated()), id: \.element.id) { index, transaction in
+                        if index > 0 {
+                            Divider()
+                                .padding(.leading, 62)
+                        }
+                        
+                        transactionItem(
+                            name: transaction.description,
+                            desc: transaction.category ?? "Movimiento",
+                            amount: formatAmount(transaction.amount),
+                            date: formatDate(transaction.date),
+                            isIncoming: transaction.type == .income
+                        )
+                    }
                 }
             }
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
+        .padding(24)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.white)
+        )
+        .shadow(color: Color.black.opacity(0.08), radius: 20, x: 0, y: 10)
     }
     
-    // Item de transacción
+    // Item de transacción modernizado
     func transactionItem(name: String, desc: String, amount: String, date: String, isIncoming: Bool) -> some View {
         HStack(spacing: 14) {
             ZStack {
-                Circle()
-                    .fill(isIncoming ? bbvaAqua.opacity(0.2) : bbvaLightBlue.opacity(0.2))
-                    .frame(width: 46, height: 46)
+                // Fondo con gradiente
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        isIncoming ? Color.BBVASuccess.opacity(0.2) : Color.BBVAOrange.opacity(0.2),
+                        isIncoming ? Color.BBVASuccess.opacity(0.1) : Color.BBVAOrange.opacity(0.1)
+                    ]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .frame(width: 48, height: 48)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
                 
-                Image(systemName: isIncoming ? "arrow.down.left.circle" : "arrow.up.right.circle")
-                    .font(.system(size: 20))
-                    .foregroundColor(isIncoming ? bbvaAqua : bbvaLightBlue)
+                Image(systemName: isIncoming ? "arrow.down.left" : "arrow.up.right")
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundColor(isIncoming ? Color.BBVASuccess : Color.BBVAOrange)
             }
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(name)
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(bbvaDarkBlue)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(Color.BBVATextPrimary)
+                    .lineLimit(1)
                 
                 Text(desc)
-                    .font(.system(size: 14))
-                    .foregroundColor(Color.gray)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(Color.BBVATextSecondary)
             }
             
-            Spacer()
+            Spacer(minLength: 8)
             
             VStack(alignment: .trailing, spacing: 4) {
                 Text(amount)
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(isIncoming ? Color.green : bbvaDarkBlue)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(isIncoming ? Color.BBVASuccess : Color.BBVACharcoal)
                 
                 Text(date)
-                    .font(.system(size: 14))
-                    .foregroundColor(Color.gray)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(Color.BBVATextSecondary)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 12)
     }
     
     // Helper to format transaction amount
@@ -433,18 +613,19 @@ struct HomeView: View {
     
     // Estadísticas del negocio
     var businessStatsView: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 18) {
             Text("Rendimiento del negocio")
-                .font(.system(size: 18, weight: .bold))
-                .foregroundColor(bbvaDarkBlue)
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(Color.BBVACharcoal)
             
-            HStack(spacing: 20) {
+            HStack(spacing: 16) {
                 // Sales stats card
                 statsCard(
                     title: "Ventas del mes",
                     value: formatCurrency(homeViewModel.businessStats?.totalSales ?? 0),
                     trend: "+14%",
-                    isPositive: true
+                    isPositive: true,
+                    color: Color.BBVASuccess
                 )
                 
                 // Expenses stats card
@@ -452,30 +633,42 @@ struct HomeView: View {
                     title: "Gastos",
                     value: formatCurrency(homeViewModel.businessStats?.totalExpenses ?? 0),
                     trend: "-5%",
-                    isPositive: true
+                    isPositive: true,
+                    color: Color.BBVAOrange
                 )
             }
             
             Button(action: {
                 print("View complete reports")
-                selectedTab = 3 // Switch to the Gestión tab
+                selectedTab = 3
             }) {
                 HStack {
+                    Image(systemName: "chart.bar.doc.horizontal.fill")
+                        .font(.system(size: 18))
+                    
                     Text("Ver informes completos")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(bbvaBlue)
+                        .font(.system(size: 15, weight: .semibold))
                     
                     Spacer()
                     
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(bbvaBlue)
+                    Image(systemName: "arrow.right")
+                        .font(.system(size: 14, weight: .semibold))
                 }
+                .foregroundColor(BBVABlue)
+                .padding(.vertical, 14)
+                .padding(.horizontal, 16)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.BBVATeal.opacity(0.1))
+                )
             }
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
+        .padding(24)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.white)
+        )
+        .shadow(color: Color.black.opacity(0.08), radius: 20, x: 0, y: 10)
     }
     
     // Helper to format currency
@@ -486,110 +679,152 @@ struct HomeView: View {
         return formatter.string(from: NSNumber(value: value)) ?? "$0.00"
     }
     
-    // Tarjeta de estadísticas
-    func statsCard(title: String, value: String, trend: String, isPositive: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+    // Tarjeta de estadísticas modernizada
+    func statsCard(title: String, value: String, trend: String, isPositive: Bool, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 6) {
+                ZStack {
+                    Circle()
+                        .fill(color.opacity(0.15))
+                        .frame(width: 32, height: 32)
+                    
+                    Image(systemName: isPositive ? "arrow.up.right" : "arrow.down.right")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(color)
+                }
+                
+                Spacer()
+                
+                HStack(spacing: 4) {
+                    Text(trend)
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundColor(color)
+                }
+            }
+            
             Text(title)
-                .font(.system(size: 14))
-                .foregroundColor(Color.gray)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(Color.BBVATextSecondary)
             
             Text(value)
                 .font(.system(size: 22, weight: .bold))
-                .foregroundColor(bbvaDarkBlue)
-            
-            HStack {
-                Image(systemName: isPositive ? "arrow.up" : "arrow.down")
-                    .font(.system(size: 12))
-                    .foregroundColor(isPositive ? Color.green : Color.red)
-                
-                Text(trend)
-                    .font(.system(size: 14))
-                    .foregroundColor(isPositive ? Color.green : Color.red)
-            }
+                .foregroundColor(Color.BBVACharcoal)
         }
-        .padding()
+        .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(red: 0.97, green: 0.98, blue: 1.0))
-        .cornerRadius(8)
+        .background(
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    color.opacity(0.08),
+                    color.opacity(0.04)
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
     
     // Productos
     var productsView: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 18) {
             Text("Productos y servicios")
-                .font(.system(size: 18, weight: .bold))
-                .foregroundColor(bbvaDarkBlue)
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(Color.BBVACharcoal)
             
-            VStack(spacing: 16) {
+            VStack(spacing: 0) {
                 productItem(
                     title: "Terminal punto de venta",
                     description: "Cobra con tarjetas a tus clientes",
                     icon: "creditcard.fill",
+                    iconColor: Color.BBVATeal,
                     action: {
                         print("Navigate to POS terminal")
-                        selectedTab = 1 // Switch to the Cobrar tab
+                        selectedTab = 1
                     }
                 )
                 
                 Divider()
+                    .padding(.leading, 62)
                 
                 productItem(
                     title: "Préstamo para tu negocio",
                     description: "Hasta $500,000 MXN pre-aprobados",
-                    icon: "chart.line.uptrend.xyaxis",
+                    icon: "banknote.fill",
+                    iconColor: Color.BBVASuccess,
                     action: {
                         print("Navigate to business loan")
                     }
                 )
                 
                 Divider()
+                    .padding(.leading, 62)
                 
                 productItem(
                     title: "Póliza de seguro",
                     description: "Protege tu negocio",
-                    icon: "lock.shield.fill",
+                    icon: "shield.checkered",
+                    iconColor: Color.BBVAOrange,
                     action: {
                         print("Navigate to insurance")
                     }
                 )
             }
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
+        .padding(24)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.white)
+        )
+        .shadow(color: Color.black.opacity(0.08), radius: 20, x: 0, y: 10)
     }
     
-    // Item de producto
-    func productItem(title: String, description: String, icon: String, action: @escaping () -> Void) -> some View {
+    // Item de producto modernizado
+    func productItem(title: String, description: String, icon: String, iconColor: Color, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 14) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(bbvaLightBlue.opacity(0.2))
-                        .frame(width: 46, height: 46)
+                    LinearGradient(
+                        gradient: Gradient(colors: [
+                            iconColor.opacity(0.2),
+                            iconColor.opacity(0.1)
+                        ]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                    .frame(width: 48, height: 48)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
                     
                     Image(systemName: icon)
-                        .font(.system(size: 20))
-                        .foregroundColor(bbvaBlue)
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundColor(iconColor)
                 }
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(bbvaDarkBlue)
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(Color.BBVATextPrimary)
                     
                     Text(description)
-                        .font(.system(size: 14))
-                        .foregroundColor(Color.gray)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(Color.BBVATextSecondary)
                 }
                 
                 Spacer()
                 
-                Image(systemName: "chevron.right")
-                    .foregroundColor(bbvaBlue)
+                ZStack {
+                    Circle()
+                        .fill(Color.BBVATeal.opacity(0.1))
+                        .frame(width: 32, height: 32)
+                    
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(BBVABlue)
+                }
             }
         }
+        .buttonStyle(PlainButtonStyle())
+        .padding(.vertical, 12)
     }
     
     // Barra de navegación inferior
@@ -602,11 +837,11 @@ struct HomeView: View {
                     VStack(spacing: 4) {
                         Image(systemName: tabIcon(for: index))
                             .font(.system(size: 22))
-                            .foregroundColor(selectedTab == index ? bbvaBlue : Color.gray)
+                            .foregroundColor(selectedTab == index ? BBVABlue : Color.gray)
                         
                         Text(tabTitle(for: index))
                             .font(.system(size: 12))
-                            .foregroundColor(selectedTab == index ? bbvaBlue : Color.gray)
+                            .foregroundColor(selectedTab == index ? BBVABlue : Color.gray)
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -647,5 +882,6 @@ struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
             .environmentObject(AuthenticationViewModel())
+            .environmentObject(HomeViewModel())
     }
 }

@@ -32,6 +32,7 @@ struct ContentView: View {
 // Main app content after authentication
 struct MainAppContentView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @StateObject private var homeViewModel = HomeViewModel()
     @State private var selectedTab = 0
     
     var body: some View {
@@ -39,6 +40,7 @@ struct MainAppContentView: View {
             // Home tab
             HomeView()
                 .environmentObject(authViewModel)
+                .environmentObject(homeViewModel)
                 .tabItem {
                     Image(systemName: "house.fill")
                     Text("Inicio")
@@ -47,19 +49,20 @@ struct MainAppContentView: View {
             
             // Payment tab
             BBVAPaymentView()
+                .environmentObject(homeViewModel)
                 .tabItem {
                     Image(systemName: "creditcard.fill")
                     Text("Cobrar")
                 }
                 .tag(1)
             
-//            // Operations tab (placeholder)
-//            Text("Operaciones")
-//                .tabItem {
-//                    Image(systemName: "arrow.left.arrow.right")
-//                    Text("Operar")
-//                }
-//                .tag(2)
+            // Financial Health tab
+            FinancialHealth()
+                .tabItem {
+                    Image(systemName: "heart.text.square.fill")
+                    Text("Salud Financiera")
+                }
+                .tag(2)
             
             // Management tab (placeholder - could be QuadrantHeatmapView)
             QuadrantHeatmapView()

@@ -1,10 +1,4 @@
 //
-//  BBVA_MiPyMESTests.swift
-//  BBVA_MiPyMESTests
-//
-//  Created by Ruy Cabello on 13/05/25.
-//
-
 import Testing
 @testable import BBVA_MiPyMES
 

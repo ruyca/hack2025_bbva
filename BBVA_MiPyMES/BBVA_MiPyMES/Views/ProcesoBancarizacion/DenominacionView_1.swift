@@ -1,8 +1,3 @@
-//
-//  UsoDenominacion_1.swift
-//  BBVA_MiPyMES
-//
-//  Created by Ruy Cabello on 13/05/25.
 
 
 import SwiftUI
@@ -96,16 +91,5 @@ struct DenominacionView_1: View {
         .toolbarBackground(.hidden, for: .navigationBar)
         // Change the navigation bar appearance for better contrast with our blue header
         .toolbarColorScheme(.dark, for: .navigationBar)
-    }
-}
-
-// MARK: - Rounded Corner Shape
-struct RoundedCornerShape: Shape {
-    var radius: CGFloat = .infinity
-    var corners: UIRectCorner = .allCorners
-    
-    func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
-        return Path(path.cgPath)
     }
 }

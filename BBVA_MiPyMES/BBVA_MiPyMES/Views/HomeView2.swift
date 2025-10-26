@@ -1,9 +1,4 @@
 //
-//  HomeView2.swift
-//  BBVA_MiPyMES
-//
-//  Created by Ruy Cabello on 13/05/25.
-//
 
 import SwiftUI
 

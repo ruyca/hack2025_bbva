@@ -10,12 +10,12 @@ struct RegistrationView: View {
                 Text("Crea tu cuenta")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                    .foregroundColor(Color("BBVATextColor"))
+                    .foregroundColor(Color.BBVATextPrimary)
                     .padding(.top, 40)
 
                 Text("Completa tus datos para empezar")
                     .font(.headline)
-                    .foregroundColor(Color("BBVADarkGray"))
+                    .foregroundColor(Color.BBVADarkGray)
                     .padding(.bottom, 20)
 
                 // --- Email Field ---
@@ -42,7 +42,7 @@ struct RegistrationView: View {
                 // --- Error Message ---
                 if let errorMessage = authViewModel.errorMessage {
                     Text(errorMessage)
-                        .foregroundColor(Color("BBVAErrorRed"))
+                        .foregroundColor(Color.BBVAError)
                         .font(.caption)
                         .multilineTextAlignment(.center)
                 }
@@ -67,7 +67,7 @@ struct RegistrationView: View {
                 // --- Link back to Login ---
                 HStack {
                     Text("¿Ya tienes cuenta?")
-                         .foregroundColor(Color("BBVATextColor"))
+                         .foregroundColor(Color.BBVATextPrimary)
                     Button("Inicia sesión") {
                         // Clear fields and dismiss the sheet
                         authViewModel.email = ""
@@ -77,7 +77,7 @@ struct RegistrationView: View {
                         authViewModel.currentState = .unauthenticated // Ensure state is reset
                         presentationMode.wrappedValue.dismiss()
                     }
-                     .foregroundColor(Color("BBVAPrimaryBlue"))
+                     .foregroundColor(Color.BBVAPrimaryRed)
                 }
                 .font(.callout)
                 .padding(.top, 20)
@@ -97,7 +97,7 @@ struct RegistrationView: View {
                      authViewModel.currentState = .unauthenticated // Ensure state is reset
                      presentationMode.wrappedValue.dismiss()
                  }
-                 .foregroundColor(Color("BBVAPrimaryBlue"))
+                 .foregroundColor(Color.BBVAPrimaryRed)
              )
         }
         // Dismiss the sheet automatically on successful registration (state becomes .authenticated)

@@ -1,10 +1,4 @@
 //
-//  ContentView.swift
-//  BBVA_MiPyMES
-//
-//  Created by Carolina Sotelo on 13/05/25.
-//
-
 import SwiftUI
 
 struct OtherView: View {

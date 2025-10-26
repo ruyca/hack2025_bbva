@@ -303,7 +303,7 @@ final class AuthenticationViewModel: ObservableObject {
          self.currentState = .authenticatingBiometric // New state
 
          let context = LAContext()
-         let reason = "Accede a tu cuenta de BBVA Empresas" // Message shown in the system prompt
+         let reason = "Accede a tu cuenta de BBVA" // Message shown in the system prompt
 
          context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { [weak self] success, authenticationError in
              DispatchQueue.main.async {

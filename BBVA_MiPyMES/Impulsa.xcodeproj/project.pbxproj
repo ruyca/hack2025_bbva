@@ -31,9 +31,9 @@
 
 /* Begin PBXFileReference section */
 		41409F762DD37A2C007650E6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		F27BF0362DD322A900803BA9 /* Impulsa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Impulsa.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F27BF0432DD322AB00803BA9 /* ImpulsaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImpulsaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F27BF04D2DD322AB00803BA9 /* ImpulsaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImpulsaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F27BF0362DD322A900803BA9 /* BBVA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BBVA.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F27BF0432DD322AB00803BA9 /* BBVATests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BBVATests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F27BF04D2DD322AB00803BA9 /* BBVAUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BBVAUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -103,9 +103,9 @@
 		F27BF0372DD322A900803BA9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F27BF0362DD322A900803BA9 /* Impulsa.app */,
-				F27BF0432DD322AB00803BA9 /* ImpulsaTests.xctest */,
-				F27BF04D2DD322AB00803BA9 /* ImpulsaUITests.xctest */,
+				F27BF0362DD322A900803BA9 /* BBVA.app */,
+				F27BF0432DD322AB00803BA9 /* BBVATests.xctest */,
+				F27BF04D2DD322AB00803BA9 /* BBVAUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -113,9 +113,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F27BF0352DD322A900803BA9 /* Impulsa */ = {
+		F27BF0352DD322A900803BA9 /* BBVA */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F27BF0572DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "Impulsa" */;
+			buildConfigurationList = F27BF0572DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "BBVA" */;
 			buildPhases = (
 				F27BF0322DD322A900803BA9 /* Sources */,
 				F27BF0332DD322A900803BA9 /* Frameworks */,
@@ -128,18 +128,18 @@
 			fileSystemSynchronizedGroups = (
 				F27BF0382DD322A900803BA9 /* BBVA_MiPyMES */,
 			);
-			name = Impulsa;
+			name = BBVA;
 			packageProductDependencies = (
 				41B497AC2DD32CF400FF1350 /* FirebaseFirestore */,
 				41B497AE2DD32D1200FF1350 /* FirebaseAuth */,
 			);
 			productName = BBVA_MiPyMES;
-			productReference = F27BF0362DD322A900803BA9 /* Impulsa.app */;
+			productReference = F27BF0362DD322A900803BA9 /* BBVA.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F27BF0422DD322AB00803BA9 /* ImpulsaTests */ = {
+		F27BF0422DD322AB00803BA9 /* BBVATests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F27BF05A2DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "ImpulsaTests" */;
+			buildConfigurationList = F27BF05A2DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "BBVATests" */;
 			buildPhases = (
 				F27BF03F2DD322AB00803BA9 /* Sources */,
 				F27BF0402DD322AB00803BA9 /* Frameworks */,
@@ -153,16 +153,16 @@
 			fileSystemSynchronizedGroups = (
 				F27BF0462DD322AB00803BA9 /* BBVA_MiPyMESTests */,
 			);
-			name = ImpulsaTests;
+			name = BBVATests;
 			packageProductDependencies = (
 			);
 			productName = BBVA_MiPyMESTests;
-			productReference = F27BF0432DD322AB00803BA9 /* ImpulsaTests.xctest */;
+			productReference = F27BF0432DD322AB00803BA9 /* BBVATests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		F27BF04C2DD322AB00803BA9 /* ImpulsaUITests */ = {
+		F27BF04C2DD322AB00803BA9 /* BBVAUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F27BF05D2DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "ImpulsaUITests" */;
+			buildConfigurationList = F27BF05D2DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "BBVAUITests" */;
 			buildPhases = (
 				F27BF0492DD322AB00803BA9 /* Sources */,
 				F27BF04A2DD322AB00803BA9 /* Frameworks */,
@@ -176,11 +176,11 @@
 			fileSystemSynchronizedGroups = (
 				F27BF0502DD322AB00803BA9 /* BBVA_MiPyMESUITests */,
 			);
-			name = ImpulsaUITests;
+			name = BBVAUITests;
 			packageProductDependencies = (
 			);
 			productName = BBVA_MiPyMESUITests;
-			productReference = F27BF04D2DD322AB00803BA9 /* ImpulsaUITests.xctest */;
+			productReference = F27BF04D2DD322AB00803BA9 /* BBVAUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -223,9 +223,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F27BF0352DD322A900803BA9 /* Impulsa */,
-				F27BF0422DD322AB00803BA9 /* ImpulsaTests */,
-				F27BF04C2DD322AB00803BA9 /* ImpulsaUITests */,
+				F27BF0352DD322A900803BA9 /* BBVA */,
+				F27BF0422DD322AB00803BA9 /* BBVATests */,
+				F27BF04C2DD322AB00803BA9 /* BBVAUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -282,12 +282,12 @@
 /* Begin PBXTargetDependency section */
 		F27BF0452DD322AB00803BA9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F27BF0352DD322A900803BA9 /* Impulsa */;
+			target = F27BF0352DD322A900803BA9 /* BBVA */;
 			targetProxy = F27BF0442DD322AB00803BA9 /* PBXContainerItemProxy */;
 		};
 		F27BF04F2DD322AB00803BA9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F27BF0352DD322A900803BA9 /* Impulsa */;
+			target = F27BF0352DD322A900803BA9 /* BBVA */;
 			targetProxy = F27BF04E2DD322AB00803BA9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -484,7 +484,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Impulsa.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Impulsa";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BBVA.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BBVA";
 			};
 			name = Debug;
 		};
@@ -502,7 +502,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Impulsa.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Impulsa";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BBVA.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BBVA";
 			};
 			name = Release;
 		};
@@ -550,7 +550,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F27BF0572DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "Impulsa" */ = {
+		F27BF0572DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "BBVA" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F27BF0582DD322AB00803BA9 /* Debug */,
@@ -559,7 +559,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F27BF05A2DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "ImpulsaTests" */ = {
+		F27BF05A2DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "BBVATests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F27BF05B2DD322AB00803BA9 /* Debug */,
@@ -568,7 +568,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F27BF05D2DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "ImpulsaUITests" */ = {
+		F27BF05D2DD322AB00803BA9 /* Build configuration list for PBXNativeTarget "BBVAUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F27BF05E2DD322AB00803BA9 /* Debug */,

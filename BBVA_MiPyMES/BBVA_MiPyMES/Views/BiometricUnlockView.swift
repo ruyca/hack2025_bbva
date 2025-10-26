@@ -11,22 +11,22 @@ struct BiometricUnlockView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 80, height: 80)
-                .foregroundColor(Color("BBVAPrimaryBlue"))
+                .foregroundColor(Color.BBVAPrimaryRed)
                 .padding(.bottom, 20)
 
             Text("BBVA Empresas")
                 .font(.largeTitle)
                 .fontWeight(.bold)
-                .foregroundColor(Color("BBVATextColor"))
+                .foregroundColor(Color.BBVATextPrimary)
 
             // --- Message based on state ---
              if authViewModel.currentState == .authenticatingBiometric {
                   ProgressView("Autenticando...")
-                     .foregroundColor(Color("BBVATextColor"))
+                     .foregroundColor(Color.BBVATextPrimary)
              } else { // .requiresBiometricUnlock state
                 Text("Desbloquea con \(LAContext().biometryType == .faceID ? "Face ID" : "Touch ID") para continuar")
                     .font(.headline)
-                    .foregroundColor(Color("BBVADarkGray"))
+                    .foregroundColor(Color.BBVATextSecondary)
                     .padding(.bottom, 20)
 
                  // --- Biometric Icon Button ---
@@ -38,7 +38,7 @@ struct BiometricUnlockView: View {
                          .resizable()
                          .scaledToFit()
                          .frame(width: 60, height: 60) // Larger icon
-                         .foregroundColor(Color("BBVAPrimaryBlue"))
+                         .foregroundColor(Color.BBVAPrimaryRed)
                  }
                  // Only allow tapping if not already authenticating
                  .disabled(authViewModel.currentState == .authenticatingBiometric)
@@ -48,7 +48,7 @@ struct BiometricUnlockView: View {
             // --- Error Message ---
             if let errorMessage = authViewModel.errorMessage {
                 Text(errorMessage)
-                    .foregroundColor(Color("BBVAErrorRed"))
+                    .foregroundColor(Color.BBVAError)
                     .font(.caption)
                     .multilineTextAlignment(.center)
                     .padding(.top, 10)
@@ -64,7 +64,7 @@ struct BiometricUnlockView: View {
                  authViewModel.shouldTriggerBiometricAuthentication = false
                  authViewModel.errorMessage = nil // Clear biometric error message
             }
-            .foregroundColor(Color("BBVAPrimaryBlue"))
+            .foregroundColor(Color.BBVAPrimaryRed)
             .padding(.bottom, 40)
 
         }

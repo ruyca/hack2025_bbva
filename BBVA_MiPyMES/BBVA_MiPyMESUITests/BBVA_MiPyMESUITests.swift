@@ -1,10 +1,4 @@
 //
-//  BBVA_MiPyMESUITests.swift
-//  BBVA_MiPyMESUITests
-//
-//  Created by Ruy Cabello on 13/05/25.
-//
-
 import XCTest
 
 final class BBVA_MiPyMESUITests: XCTestCase {

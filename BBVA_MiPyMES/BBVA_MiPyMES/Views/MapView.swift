@@ -158,14 +158,14 @@ func getQuadrantData(from tpvData: [TPVTransaction],
     return quadrantDataArray
 }
 
-// --- VISTA PRINCIPAL REDISEÑADA CON ESTILO BBVA Y PANTALLA COMPLETA ---
+// --- VISTA PRINCIPAL MODERNIZADA CON ESTILO BBVA ---
 struct QuadrantHeatmapView: View {
-    // BBVA Colors
-    let bbvaPrimaryBlue = Color(red: 0.004, green: 0.345, blue: 0.663)  // Azul principal
-    let bbvaDarkBlue = Color(red: 0, green: 0.216, blue: 0.416)         // Azul oscuro
-    let bbvaLightBlue = Color(red: 0.188, green: 0.573, blue: 0.851)    // Azul claro
-    let bbvaAqua = Color(red: 0, green: 0.8, blue: 0.8)                 // Aqua
-    let bbvaBackground = Color(red: 0.95, green: 0.97, blue: 0.98)      // Fondo
+    // BBVA Colors modernos
+    let BBVAPrimaryRed = Color.BBVAPrimaryRed
+    let BBVADarkRed = Color.BBVADarkRed
+    let BBVATeal = Color.BBVATeal
+    let BBVACharcoal = Color.BBVACharcoal
+    let BBVABackground = Color.BBVABackground
     
     // Estado del mapa y datos
     @State private var mapCameraPosition: MapCameraPosition = .region(
@@ -182,9 +182,13 @@ struct QuadrantHeatmapView: View {
     @State private var selectedVisualizationMode: VisualizationMode = .totalValue
     @State private var isLoading: Bool = false
     
-    // Estado para el menú hamburguesa
+    // Estado para el menú de filtros
     @State private var showFilterMenu: Bool = false
     @State private var isFilterApplied: Bool = false
+    @State private var showLegend: Bool = false
+    
+    // Animación
+    @State private var headerAppeared = false
     
     // Configuración del grid
     let gridRows = 20
@@ -203,171 +207,138 @@ struct QuadrantHeatmapView: View {
     
     var body: some View {
         ZStack {
-            // Mapa a pantalla completa
-            Map(position: $mapCameraPosition) {
-                ForEach(quadrantData) { quadrant in
-                    Annotation("", coordinate: quadrant.centerCoordinate) {
-                        Rectangle()
-                            .foregroundColor(colorForQuadrant(quadrant, mode: selectedVisualizationMode))
-                            .frame(width: squareSizeForQuadrant(quadrant, mode: selectedVisualizationMode),
-                                  height: squareSizeForQuadrant(quadrant, mode: selectedVisualizationMode))
-                            .cornerRadius(3)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 3)
-                                    .stroke(bbvaDarkBlue.opacity(0.2), lineWidth: 0.5)
-                            )
-                            .shadow(color: Color.black.opacity(0.1), radius: 1, x: 0, y: 1)
-                            .onTapGesture {
-                                selectedQuadrant = quadrant
-                            }
-                    }
-                }
-            }
-            .ignoresSafeArea(edges: [.horizontal, .bottom])
+            // Gradiente de fondo sutil
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.BBVABackground,
+                    Color.BBVALightBlue.opacity(0.2)
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
             
-            // Header BBVA Style - Mantener solo la barra superior
-            VStack {
-                // Top Bar
-                HStack {
-                    // Título
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text("Análisis Geográfico")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.white)
-                    }
-                    
-                    Spacer()
-                    
-                    // Icono de Leyenda
-                    Button(action: {
-                        // Mostrar leyenda en un popover (o similar)
-                    }) {
-                        Image(systemName: "info.circle")
-                            .font(.system(size: 20))
-                            .foregroundColor(.white)
-                    }
-                    .padding(.horizontal, 8)
-                    
-                    // Botón hamburguesa para mostrar filtros
-                    Button(action: {
-                        withAnimation {
-                            showFilterMenu.toggle()
+            VStack(spacing: 0) {
+                // Header moderno
+                modernHeader
+                
+                // Mapa con overlay
+                ZStack {
+                    Map(position: $mapCameraPosition) {
+                        ForEach(quadrantData) { quadrant in
+                            Annotation("", coordinate: quadrant.centerCoordinate) {
+                                Rectangle()
+                                    .foregroundColor(colorForQuadrant(quadrant, mode: selectedVisualizationMode))
+                                    .frame(width: squareSizeForQuadrant(quadrant, mode: selectedVisualizationMode),
+                                          height: squareSizeForQuadrant(quadrant, mode: selectedVisualizationMode))
+                                    .cornerRadius(4)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 4)
+                                            .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                    )
+                                    .shadow(color: Color.black.opacity(0.15), radius: 3, x: 0, y: 2)
+                                    .onTapGesture {
+                                        selectedQuadrant = quadrant
+                                    }
+                            }
                         }
-                    }) {
-                        Image(systemName: "slider.horizontal.3")
-                            .font(.system(size: 20))
-                            .foregroundColor(.white)
                     }
-                }
-                .padding(.horizontal)
-                .padding(.top, 8)
-                .padding(.bottom, 10)
-                .background(bbvaPrimaryBlue)
-                
-                Spacer()
-                
-                // Pequeño indicador de filtro en la esquina inferior
-                if isFilterApplied {
-                    HStack {
+                    .cornerRadius(0)
+                    
+                    // Estadísticas flotantes en la parte superior del mapa
+                    VStack {
+                        HStack(spacing: 12) {
+                            quickStatCard(
+                                icon: "chart.bar.fill",
+                                title: "Zonas Activas",
+                                value: "\(quadrantData.count)",
+                                color: .BBVATeal
+                            )
+                            
+                            quickStatCard(
+                                icon: "creditcard.fill",
+                                title: "Total TPVs",
+                                value: "\(quadrantData.reduce(0) { $0 + $1.numberOfTPVs })",
+                                color: .BBVAOrange
+                            )
+                            
+                            quickStatCard(
+                                icon: "dollarsign.circle.fill",
+                                title: "Valor Total",
+                                value: formatCurrency(quadrantData.reduce(0) { $0 + $1.totalTransactionValue }),
+                                color: .BBVASuccess
+                            )
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.top, 12)
+                        
                         Spacer()
                         
-                        VStack(alignment: .trailing) {
-                            Text(selectedVisualizationMode.rawValue)
-                                .font(.caption)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 5)
-                                .background(bbvaPrimaryBlue)
-                                .foregroundColor(.white)
-                                .cornerRadius(15)
+                        // Leyenda compacta en la parte inferior
+                        if showLegend {
+                            modernLegendView
+                                .transition(.move(edge: .bottom).combined(with: .opacity))
                         }
-                        .padding()
                     }
                 }
             }
             
-            // Panel de filtros (desplegable)
+            // Panel de filtros deslizable
             if showFilterMenu {
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
                     .onTapGesture {
-                        withAnimation {
+                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                             showFilterMenu = false
                         }
                     }
                 
-                VStack {
-                    HStack {
-                        Spacer()
-                        
-                        FilterMenuPanel(
-                            bbvaPrimaryBlue: bbvaPrimaryBlue,
-                            bbvaDarkBlue: bbvaDarkBlue,
-                            startDate: $startDate,
-                            endDate: $endDate,
-                            selectedVisualizationMode: $selectedVisualizationMode,
-                            isLoading: $isLoading,
-                            showFilterMenu: $showFilterMenu,
-                            isFilterApplied: $isFilterApplied,
-                            applyFilters: {
-                                isLoading = true
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    updateQuadrantData()
-                                    isLoading = false
-                                    isFilterApplied = true
-                                    showFilterMenu = false
-                                }
-                            }
-                        )
-                        .frame(width: 300)
-                        .background(bbvaBackground)
-                        .customCornerRadius(12, corners: [.topLeft, .bottomLeft])
-                        .shadow(color: Color.black.opacity(0.2), radius: 10, x: -5, y: 0)
-                        .transition(.move(edge: .trailing))
-                    }
-                }
-                .zIndex(2)
-            }
-            
-            // Leyenda pequeña en la esquina inferior izquierda
-            VStack {
-                Spacer()
-                
                 HStack {
-                    LegendView(bbvaDarkBlue: bbvaDarkBlue)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 5)
-                        .background(Color.white.opacity(0.9))
-                        .cornerRadius(8)
-                        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
-                        .padding()
-                    
                     Spacer()
+                    
+                    modernFilterPanel
+                        .frame(width: 340)
+                        .transition(.move(edge: .trailing))
                 }
+                .zIndex(10)
             }
             
-            // Indicador de carga cuando aplica filtros
+            // Indicador de carga
             if isLoading {
-                Color.black.opacity(0.3)
-                    .ignoresSafeArea()
-                
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                    .scaleEffect(2)
+                ZStack {
+                    Color.black.opacity(0.3)
+                        .ignoresSafeArea()
+                    
+                    VStack(spacing: 16) {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .scaleEffect(1.5)
+                        
+                        Text("Actualizando datos...")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.white)
+                    }
+                    .padding(32)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color.BBVACharcoal.opacity(0.95))
+                    )
+                }
+                .zIndex(15)
             }
         }
         .sheet(item: $selectedQuadrant) { quadrant in
-            QuadrantDetailView(
-                quadrant: quadrant,
-                bbvaPrimaryBlue: bbvaPrimaryBlue,
-                bbvaDarkBlue: bbvaDarkBlue,
-                bbvaLightBlue: bbvaLightBlue
-            )
-            .presentationDetents([.medium, .large])
+            modernQuadrantDetailView(quadrant: quadrant)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
         }
         .onAppear {
-            // Asegurarnos que los datos están cargados
             if quadrantData.isEmpty {
                 updateQuadrantData()
+            }
+            
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                headerAppeared = true
             }
         }
     }
@@ -375,6 +346,487 @@ struct QuadrantHeatmapView: View {
     // Función para actualizar los datos de los cuadrantes
     private func updateQuadrantData() {
         quadrantData = getQuadrantData(from: rawTPVData, startDate: startDate, endDate: endDate, gridRows: gridRows, gridColumns: gridColumns)
+    }
+    
+    // MARK: - Modern UI Components
+    
+    // Header moderno con gradiente
+    private var modernHeader: some View {
+        ZStack {
+            // Gradiente de fondo
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.BBVAPrimaryRed,
+                    Color.BBVADarkRed
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            
+            HStack(alignment: .center, spacing: 16) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Mapa de Calor")
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundColor(.white.opacity(0.85))
+                    
+                    Text("Análisis Geográfico")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.white)
+                }
+                
+                Spacer()
+                
+                HStack(spacing: 12) {
+                    Button(action: {
+                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                            showLegend.toggle()
+                        }
+                    }) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.white.opacity(0.2))
+                                .frame(width: 44, height: 44)
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                )
+                            
+                            Image(systemName: showLegend ? "eye.slash.fill" : "eye.fill")
+                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(.white)
+                        }
+                    }
+                    
+                    Button(action: {
+                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                            showFilterMenu.toggle()
+                        }
+                    }) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.white.opacity(isFilterApplied ? 0.3 : 0.2))
+                                .frame(width: 44, height: 44)
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                )
+                            
+                            Image(systemName: "slider.horizontal.3")
+                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(.white)
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 16)
+            .padding(.bottom, 24)
+        }
+        .frame(height: 100)
+        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 5)
+        .offset(y: headerAppeared ? 0 : -100)
+        .opacity(headerAppeared ? 1 : 0)
+    }
+    
+    // Panel de filtros moderno
+    private var modernFilterPanel: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Header del panel
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Filtros Avanzados")
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(Color.BBVACharcoal)
+                    
+                    Text("Personaliza tu análisis")
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(Color.BBVATextSecondary)
+                }
+                
+                Spacer()
+                
+                Button(action: {
+                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                        showFilterMenu = false
+                    }
+                }) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.BBVALightGray.opacity(0.3))
+                            .frame(width: 36, height: 36)
+                        
+                        Image(systemName: "xmark")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(Color.BBVATextSecondary)
+                    }
+                }
+            }
+            .padding(24)
+            .background(Color.white)
+            
+            Divider()
+            
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 24) {
+                    // Período de análisis
+                    VStack(alignment: .leading, spacing: 14) {
+                        Label("Período de Análisis", systemImage: "calendar")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(Color.BBVACharcoal)
+                        
+                        VStack(spacing: 12) {
+                            HStack {
+                                Text("Desde:")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(Color.BBVATextSecondary)
+                                    .frame(width: 60, alignment: .leading)
+                                
+                                DatePicker("", selection: $startDate, displayedComponents: .date)
+                                    .labelsHidden()
+                                    .accentColor(Color.BBVAPrimaryRed)
+                            }
+                            .padding(12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.BBVALightGray.opacity(0.3))
+                            )
+                            
+                            HStack {
+                                Text("Hasta:")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(Color.BBVATextSecondary)
+                                    .frame(width: 60, alignment: .leading)
+                                
+                                DatePicker("", selection: $endDate, displayedComponents: .date)
+                                    .labelsHidden()
+                                    .accentColor(Color.BBVAPrimaryRed)
+                            }
+                            .padding(12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.BBVALightGray.opacity(0.3))
+                            )
+                        }
+                    }
+                    
+                    Divider()
+                    
+                    // Métrica a visualizar
+                    VStack(alignment: .leading, spacing: 14) {
+                        Label("Métrica de Visualización", systemImage: "chart.bar.fill")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(Color.BBVACharcoal)
+                        
+                        VStack(spacing: 10) {
+                            ForEach(VisualizationMode.allCases) { mode in
+                                Button(action: {
+                                    selectedVisualizationMode = mode
+                                }) {
+                                    HStack(spacing: 12) {
+                                        Image(systemName: iconForMode(mode))
+                                            .font(.system(size: 16, weight: .semibold))
+                                            .foregroundColor(selectedVisualizationMode == mode ? Color.BBVAPrimaryRed : Color.BBVATextSecondary)
+                                            .frame(width: 24)
+                                        
+                                        Text(mode.rawValue)
+                                            .font(.system(size: 15, weight: .medium))
+                                            .foregroundColor(selectedVisualizationMode == mode ? Color.BBVACharcoal : Color.BBVATextSecondary)
+                                        
+                                        Spacer()
+                                        
+                                        if selectedVisualizationMode == mode {
+                                            Image(systemName: "checkmark.circle.fill")
+                                                .font(.system(size: 20))
+                                                .foregroundColor(Color.BBVAPrimaryRed)
+                                        }
+                                    }
+                                    .padding(14)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(selectedVisualizationMode == mode ? Color.BBVAPrimaryRed.opacity(0.1) : Color.BBVALightGray.opacity(0.3))
+                                    )
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .stroke(selectedVisualizationMode == mode ? Color.BBVAPrimaryRed.opacity(0.3) : Color.clear, lineWidth: 2)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding(24)
+            }
+            .background(Color.white)
+            
+            // Botón aplicar
+            VStack(spacing: 0) {
+                Divider()
+                
+                Button(action: {
+                    isLoading = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                        updateQuadrantData()
+                        isLoading = false
+                        isFilterApplied = true
+                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                            showFilterMenu = false
+                        }
+                    }
+                }) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 18, weight: .semibold))
+                        
+                        Text("Aplicar Filtros")
+                            .font(.system(size: 17, weight: .bold))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 56)
+                }
+                .buttonStyle(BBVAPrimaryButtonStyle())
+                .padding(20)
+                .background(Color.white)
+            }
+        }
+        .background(Color.white)
+        .cornerRadius(20, corners: [.topLeft, .bottomLeft])
+        .shadow(color: Color.black.opacity(0.2), radius: 20, x: -10, y: 0)
+    }
+    
+    // Leyenda moderna
+    private var modernLegendView: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Intensidad de Actividad")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundColor(Color.BBVACharcoal)
+            
+            HStack(spacing: 16) {
+                legendItem(color: .white.opacity(0.5), text: "Baja", icon: "circle.fill")
+                legendItem(color: .yellow.opacity(0.5), text: "Media", icon: "circle.fill")
+                legendItem(color: .orange.opacity(0.5), text: "Alta", icon: "circle.fill")
+                legendItem(color: .red.opacity(0.5), text: "Muy Alta", icon: "circle.fill")
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.white.opacity(0.95))
+        )
+        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 5)
+        .padding(.horizontal, 16)
+        .padding(.bottom, 16)
+    }
+    
+    private func legendItem(color: Color, text: String, icon: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 12))
+                .foregroundColor(color)
+            
+            Text(text)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(Color.BBVATextPrimary)
+        }
+    }
+    
+    // Tarjeta de estadística rápida
+    private func quickStatCard(icon: String, title: String, value: String, color: Color) -> some View {
+        VStack(spacing: 8) {
+            ZStack {
+                Circle()
+                    .fill(color.opacity(0.15))
+                    .frame(width: 36, height: 36)
+                
+                Image(systemName: icon)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(color)
+            }
+            
+            Text(value)
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(Color.BBVACharcoal)
+            
+            Text(title)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(Color.BBVATextSecondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 14)
+        .background(
+            RoundedRectangle(cornerRadius: 14)
+                .fill(Color.white.opacity(0.95))
+        )
+        .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
+    }
+    
+    // Helper para formatear moneda
+    private func formatCurrency(_ value: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencySymbol = "$"
+        formatter.maximumFractionDigits = 0
+        
+        if value >= 1_000_000 {
+            return "$\(String(format: "%.1f", value / 1_000_000))M"
+        } else if value >= 1_000 {
+            return "$\(String(format: "%.1f", value / 1_000))K"
+        }
+        
+        return formatter.string(from: NSNumber(value: value)) ?? "$0"
+    }
+    
+    // Icono para cada modo de visualización
+    private func iconForMode(_ mode: VisualizationMode) -> String {
+        switch mode {
+        case .totalValue: return "dollarsign.circle.fill"
+        case .numberOfTPVs: return "creditcard.fill"
+        case .averageTicketSize: return "cart.fill"
+        case .averageValuePerTPV: return "building.2.fill"
+        }
+    }
+    
+    // Vista de detalle del cuadrante modernizada
+    private func modernQuadrantDetailView(quadrant: QuadrantData) -> some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                // Header con gradiente
+                ZStack {
+                    LinearGradient(
+                        gradient: Gradient(colors: [
+                            Color.BBVAPrimaryRed,
+                            Color.BBVADarkRed
+                        ]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Análisis de Zona")
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundColor(.white.opacity(0.85))
+                        
+                        Text("Cuadrante \(quadrant.id)")
+                            .font(.system(size: 26, weight: .bold))
+                            .foregroundColor(.white)
+                        
+                        HStack(spacing: 6) {
+                            Image(systemName: "mappin.circle.fill")
+                                .font(.system(size: 14))
+                            
+                            Text("Lat: \(String(format: "%.4f", quadrant.centerCoordinate.latitude)), Lon: \(String(format: "%.4f", quadrant.centerCoordinate.longitude))")
+                                .font(.system(size: 13, weight: .medium))
+                        }
+                        .foregroundColor(.white.opacity(0.8))
+                        .padding(.top, 4)
+                    }
+                    .padding(24)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .frame(height: 140)
+                
+                // Contenido
+                VStack(spacing: 16) {
+                    // Estadísticas principales
+                    HStack(spacing: 12) {
+                        statBox(
+                            title: "TPVs",
+                            value: "\(quadrant.numberOfTPVs)",
+                            icon: "creditcard.fill",
+                            color: .BBVATeal
+                        )
+                        
+                        statBox(
+                            title: "Valor Total",
+                            value: formatCurrency(quadrant.totalTransactionValue),
+                            icon: "dollarsign.circle.fill",
+                            color: .BBVASuccess
+                        )
+                    }
+                    
+                    HStack(spacing: 12) {
+                        statBox(
+                            title: "Transacciones",
+                            value: "\(quadrant.totalTransactionCount)",
+                            icon: "arrow.left.arrow.right",
+                            color: .BBVAOrange
+                        )
+                        
+                        statBox(
+                            title: "Ticket Promedio",
+                            value: formatCurrency(quadrant.averageTicketSize),
+                            icon: "chart.line.uptrend.xyaxis",
+                            color: .BBVAPrimaryRed
+                        )
+                    }
+                    
+                    // Mini mapa
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Ubicación en el Mapa")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(Color.BBVACharcoal)
+                        
+                        Map(initialPosition: .region(quadrant.boundingRegion)) {
+                            Annotation("", coordinate: quadrant.centerCoordinate) {
+                                Rectangle()
+                                    .frame(width: 150, height: 150)
+                                    .foregroundColor(Color.BBVAPrimaryRed.opacity(0.3))
+                                    .overlay(
+                                        Rectangle()
+                                            .stroke(Color.BBVAPrimaryRed, lineWidth: 3)
+                                            .frame(width: 150, height: 150)
+                                    )
+                            }
+                        }
+                        .frame(height: 200)
+                        .cornerRadius(16)
+                    }
+                    .padding(20)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color.white)
+                    )
+                    .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
+                }
+                .padding(20)
+                .background(Color.BBVABackground)
+            }
+        }
+        .background(Color.BBVABackground)
+        .edgesIgnoringSafeArea(.top)
+    }
+    
+    // Caja de estadística
+    private func statBox(title: String, value: String, icon: String, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                ZStack {
+                    Circle()
+                        .fill(color.opacity(0.15))
+                        .frame(width: 40, height: 40)
+                    
+                    Image(systemName: icon)
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(color)
+                }
+                
+                Spacer()
+            }
+            
+            Text(title)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(Color.BBVATextSecondary)
+            
+            Text(value)
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(Color.BBVACharcoal)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(18)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.white)
+        )
+        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
     }
     
     // Funciones para cálculos de valores normalizados y visualización
@@ -426,8 +878,8 @@ struct QuadrantHeatmapView: View {
 
 // Panel de filtros deslizable
 struct FilterMenuPanel: View {
-    let bbvaPrimaryBlue: Color
-    let bbvaDarkBlue: Color
+    let BBVAPrimaryRed: Color
+    let BBVACharcoal: Color
     
     @Binding var startDate: Date
     @Binding var endDate: Date
@@ -445,7 +897,7 @@ struct FilterMenuPanel: View {
                 Text("Filtros")
                     .font(.title3)
                     .fontWeight(.bold)
-                    .foregroundColor(bbvaDarkBlue)
+                    .foregroundColor(BBVACharcoal)
                 
                 Spacer()
                 
@@ -456,7 +908,7 @@ struct FilterMenuPanel: View {
                 }) {
                     Image(systemName: "xmark")
                         .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(bbvaDarkBlue)
+                        .foregroundColor(BBVACharcoal)
                         .padding(8)
                         .background(Color.gray.opacity(0.1))
                         .clipShape(Circle())
@@ -470,7 +922,7 @@ struct FilterMenuPanel: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Período de análisis")
                     .font(.headline)
-                    .foregroundColor(bbvaDarkBlue)
+                    .foregroundColor(BBVACharcoal)
                 
                 VStack(spacing: 12) {
                     HStack {
@@ -482,7 +934,7 @@ struct FilterMenuPanel: View {
                         
                         DatePicker("", selection: $startDate, displayedComponents: .date)
                             .labelsHidden()
-                            .accentColor(bbvaPrimaryBlue)
+                            .accentColor(BBVAPrimaryRed)
                     }
                     
                     HStack {
@@ -494,7 +946,7 @@ struct FilterMenuPanel: View {
                         
                         DatePicker("", selection: $endDate, displayedComponents: .date)
                             .labelsHidden()
-                            .accentColor(bbvaPrimaryBlue)
+                            .accentColor(BBVAPrimaryRed)
                     }
                 }
             }
@@ -505,7 +957,7 @@ struct FilterMenuPanel: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Métrica a visualizar")
                     .font(.headline)
-                    .foregroundColor(bbvaDarkBlue)
+                    .foregroundColor(BBVACharcoal)
                 
                 VStack(spacing: 10) {
                     ForEach(VisualizationMode.allCases) { mode in
@@ -515,20 +967,20 @@ struct FilterMenuPanel: View {
                             HStack {
                                 Text(mode.rawValue)
                                     .font(.subheadline)
-                                    .foregroundColor(selectedVisualizationMode == mode ? bbvaPrimaryBlue : .gray)
+                                    .foregroundColor(selectedVisualizationMode == mode ? BBVAPrimaryRed : .gray)
                                 
                                 Spacer()
                                 
                                 if selectedVisualizationMode == mode {
                                     Image(systemName: "checkmark")
-                                        .foregroundColor(bbvaPrimaryBlue)
+                                        .foregroundColor(BBVAPrimaryRed)
                                 }
                             }
                             .padding(.vertical, 8)
                             .padding(.horizontal, 12)
                             .background(
                                 RoundedRectangle(cornerRadius: 8)
-                                    .fill(selectedVisualizationMode == mode ? bbvaPrimaryBlue.opacity(0.1) : Color.clear)
+                                    .fill(selectedVisualizationMode == mode ? BBVAPrimaryRed.opacity(0.1) : Color.clear)
                             )
                         }
                     }
@@ -553,7 +1005,7 @@ struct FilterMenuPanel: View {
                     Spacer()
                 }
                 .padding(.vertical, 12)
-                .background(bbvaPrimaryBlue)
+                .background(BBVAPrimaryRed)
                 .foregroundColor(.white)
                 .cornerRadius(8)
             }
@@ -565,7 +1017,7 @@ struct FilterMenuPanel: View {
 
 // Leyenda pequeña
 struct LegendView: View {
-    let bbvaDarkBlue: Color
+    let BBVACharcoal: Color
     
     var body: some View {
         HStack(spacing: 10) {
@@ -584,12 +1036,12 @@ struct LegendView: View {
                 .frame(width: 10, height: 10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 3)
-                        .stroke(bbvaDarkBlue.opacity(0.3), lineWidth: 0.5)
+                        .stroke(BBVACharcoal.opacity(0.3), lineWidth: 0.5)
                 )
             
             Text(text)
                 .font(.system(size: 9))
-                .foregroundColor(bbvaDarkBlue)
+                .foregroundColor(BBVACharcoal)
         }
     }
 }
@@ -597,9 +1049,9 @@ struct LegendView: View {
 // --- VISTA DE DETALLE REDISEÑADA CON ESTILO BBVA ---
 struct QuadrantDetailView: View {
     let quadrant: QuadrantData
-    let bbvaPrimaryBlue: Color
-    let bbvaDarkBlue: Color
-    let bbvaLightBlue: Color
+    let BBVAPrimaryRed: Color
+    let BBVACharcoal: Color
+    let BBVATeal: Color
     
     var body: some View {
         ScrollView {
@@ -617,7 +1069,7 @@ struct QuadrantDetailView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(bbvaPrimaryBlue)
+                .background(BBVAPrimaryRed)
                 
                 // Contenido
                 VStack(spacing: 16) {
@@ -625,7 +1077,7 @@ struct QuadrantDetailView: View {
                     VStack {
                         Text("Resumen de actividad")
                             .font(.headline)
-                            .foregroundColor(bbvaDarkBlue)
+                            .foregroundColor(BBVACharcoal)
                             .padding(.bottom, 8)
                         
                         HStack(spacing: 30) {
@@ -633,7 +1085,7 @@ struct QuadrantDetailView: View {
                             VStack {
                                 Text("\(quadrant.numberOfTPVs)")
                                     .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(bbvaPrimaryBlue)
+                                    .foregroundColor(BBVAPrimaryRed)
                                 
                                 Text("TPVs")
                                     .font(.caption)
@@ -647,7 +1099,7 @@ struct QuadrantDetailView: View {
                             VStack {
                                 Text(formattedCurrency(quadrant.totalTransactionValue))
                                     .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(bbvaPrimaryBlue)
+                                    .foregroundColor(BBVAPrimaryRed)
                                 
                                 Text("Total")
                                     .font(.caption)
@@ -661,7 +1113,7 @@ struct QuadrantDetailView: View {
                             VStack {
                                 Text("\(quadrant.totalTransactionCount)")
                                     .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(bbvaPrimaryBlue)
+                                    .foregroundColor(BBVAPrimaryRed)
                                 
                                 Text("Transacciones")
                                     .font(.caption)
@@ -678,7 +1130,7 @@ struct QuadrantDetailView: View {
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Datos promedio")
                             .font(.headline)
-                            .foregroundColor(bbvaDarkBlue)
+                            .foregroundColor(BBVACharcoal)
                         
                         Divider()
                         
@@ -708,17 +1160,17 @@ struct QuadrantDetailView: View {
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Ubicación")
                             .font(.headline)
-                            .foregroundColor(bbvaDarkBlue)
+                            .foregroundColor(BBVACharcoal)
                         
                         // Mapa
                         Map(initialPosition: .region(quadrant.boundingRegion)) {
                             Annotation("", coordinate: quadrant.centerCoordinate) {
                                 Rectangle()
                                     .frame(width: 180, height: 180)
-                                    .foregroundColor(bbvaPrimaryBlue.opacity(0.2))
+                                    .foregroundColor(BBVAPrimaryRed.opacity(0.2))
                                     .overlay(
                                         Rectangle()
-                                            .stroke(bbvaPrimaryBlue, lineWidth: 2)
+                                            .stroke(BBVAPrimaryRed, lineWidth: 2)
                                             .frame(width: 180, height: 180)
                                     )
                             }
@@ -738,7 +1190,7 @@ struct QuadrantDetailView: View {
                     // Nota informativa
                     HStack {
                         Image(systemName: "info.circle.fill")
-                            .foregroundColor(bbvaLightBlue)
+                            .foregroundColor(BBVATeal)
                         
                         Text("Datos agregados y anónimos para la zona de análisis.")
                             .font(.caption)
@@ -760,17 +1212,17 @@ struct QuadrantDetailView: View {
     func metricRow(icon: String, title: String, value: String) -> some View {
         HStack {
             Image(systemName: icon)
-                .foregroundColor(bbvaPrimaryBlue)
+                .foregroundColor(BBVAPrimaryRed)
                 .font(.system(size: 18))
                 .frame(width: 24, height: 24)
             
             Text(title)
-                .foregroundColor(bbvaDarkBlue)
+                .foregroundColor(BBVACharcoal)
             
             Spacer()
             
             Text(value)
-                .foregroundColor(bbvaPrimaryBlue)
+                .foregroundColor(BBVAPrimaryRed)
                 .fontWeight(.semibold)
         }
     }
@@ -781,23 +1233,6 @@ struct QuadrantDetailView: View {
         formatter.numberStyle = .currency
         formatter.locale = Locale(identifier: "es_MX")
         return formatter.string(from: NSNumber(value: value)) ?? "$\(value)"
-    }
-}
-
-// Extensión para el panel lateral - usamos un nombre diferente para evitar conflictos
-extension View {
-    func customCornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape(RoundedCornerShape(radius: radius, corners: corners))
-    }
-}
-
-struct RoundedCornerShape: Shape {
-    var radius: CGFloat = .infinity
-    var corners: UIRectCorner = .allCorners
-
-    func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
-        return Path(path.cgPath)
     }
 }
 

@@ -25,6 +25,39 @@ class HomeViewModel: ObservableObject {
         Task {
             await fetchData()
         }
+        
+        // Escuchar notificaciones de transacciones completadas
+        NotificationCenter.default.addObserver(
+            forName: .transactionCompleted,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let self = self else { return }
+            
+            if let transactionData = notification.userInfo?["data"] as? TransactionCompletedData {
+                Task {
+                    _ = await self.saveTransaction(
+                        description: transactionData.description,
+                        amount: transactionData.amount,
+                        type: transactionData.type,
+                        category: "Sales",
+                        paymentMethod: transactionData.paymentMethod
+                    )
+                }
+            }
+        }
+        
+        // Escuchar notificaciones de refresh
+        NotificationCenter.default.addObserver(
+            forName: .refreshHomeData,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            Task {
+                await self.refreshData()
+            }
+        }
     }
     
     @MainActor
@@ -53,8 +86,8 @@ class HomeViewModel: ObservableObject {
                 
                 // If business found, fetch related account
                 if let businessID = self.business?.id {
-//                    await fetchAccount(for: businessID)
-//                    await fetchBusinessStats(for: businessID)
+                    await fetchAccount(for: businessID)
+                    await fetchBusinessStats(for: businessID)
                 }
             } else {
                 // Business not found, create a default one for demo purposes
@@ -232,91 +265,95 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-//    @MainActor
-//    private func fetchAccount(for businessID: String) async {
-//        do {
-//            let accounts = try await FirebaseManager.shared.getDocuments(
-//                from: "accounts",
-//                whereField: "businessId",
-//                isEqualTo: businessID,
-//                limit: 1,
-//                as: Account.self
-//            )
-//            
-//            if let account = accounts.first {
-//                self.account = account
-//                
-//                // If account found, fetch transactions
-//                if let accountID = self.account?.id {
-//                    await fetchTransactions(for: accountID)
-//                    
-//                    // Start listening for account balance changes
-//                    startBalanceListener(for: accountID)
-//                }
-//            } else {
-//                print("No account found for business ID: \(businessID)")
-//                // Create a default account if none exists
-//                await createDefaultAccount(for: businessID)
-//            }
-//        } catch {
-//            print("Error fetching account: \(error.localizedDescription)")
-//            errorMessage = "Error cargando cuenta: \(error.localizedDescription)"
-//        }
-//    }
+    @MainActor
+    private func fetchAccount(for businessID: String) async {
+        do {
+            let accounts = try await FirebaseManager.shared.getDocuments(
+                from: "accounts",
+                whereField: "businessId",
+                isEqualTo: businessID,
+                limit: 1,
+                as: Account.self
+            )
+            
+            if let account = accounts.first {
+                self.account = account
+                
+                // If account found, fetch transactions
+                if let accountID = self.account?.id {
+                    await fetchTransactions(for: accountID)
+                    
+                    // Start listening for account balance changes
+                    startBalanceListener(for: accountID)
+                }
+            } else {
+                print("No account found for business ID: \(businessID)")
+                // Create a default account if none exists
+                await createDefaultAccount(for: businessID)
+            }
+        } catch {
+            print("Error fetching account: \(error.localizedDescription)")
+            errorMessage = "Error cargando cuenta: \(error.localizedDescription)"
+        }
+    }
     
-//    @MainActor
-//    private func fetchTransactions(for accountID: String) async {
-//        do {
-//            let transactions = try await FirebaseManager.shared.getDocuments(
-//                from: "transactions",
-//                whereField: "accountId",
-//                isEqualTo: accountID,
-//                orderBy: "date",
-//                descending: true,
-//                limit: 5,
-//                as: Transaction.self
-//            )
-//            
-//            self.recentTransactions = transactions
-//            
-//            if self.recentTransactions.isEmpty {
-//                // If no transactions, create sample ones for demo
-//                await createSampleTransactions(for: accountID)
-//            }
-//        } catch {
-//            print("Error fetching transactions: \(error.localizedDescription)")
-//            errorMessage = "Error cargando transacciones: \(error.localizedDescription)"
-//        }
-//    }
+    @MainActor
+    private func fetchTransactions(for accountID: String) async {
+        do {
+            // Simplificamos la consulta para no requerir índice compuesto
+            let transactions = try await FirebaseManager.shared.getDocuments(
+                from: "transactions",
+                whereField: "accountId",
+                isEqualTo: accountID,
+                limit: 20,
+                as: Transaction.self
+            )
+            
+            // Ordenar manualmente por fecha y tomar las últimas 5
+            let sortedTransactions = transactions.sorted { $0.date > $1.date }
+            self.recentTransactions = Array(sortedTransactions.prefix(5))
+            
+            if self.recentTransactions.isEmpty {
+                // If no transactions, create sample ones for demo
+                await createSampleTransactions(for: accountID)
+            }
+        } catch {
+            print("Error fetching transactions: \(error.localizedDescription)")
+            // Si falla, crear transacciones de ejemplo
+            await createSampleTransactions(for: accountID)
+        }
+    }
     
-//    @MainActor
-//    private func fetchBusinessStats(for businessID: String) async {
-//        do {
-//            let dateFormatter = DateFormatter()
-//            dateFormatter.dateFormat = "yyyy-MM"
-//            let currentPeriod = dateFormatter.string(from: Date())
-//            
-//            let stats = try await FirebaseManager.shared.getDocuments(
-//                from: "businessStats",
-//                whereField: "businessId",
-//                isEqualTo: businessID,
-//                orderBy: "period",
-//                descending: true,
-//                limit: 1,
-//                as: BusinessStats.self
-//            )
-//            
-//            if let latestStats = stats.first {
-//                self.businessStats = latestStats
-//            } else {
-//                // Create default stats for demo
-//                await createDefaultStats(for: businessID)
-//            }
-//        } catch {
-//            print("Error fetching business stats: \(error.localizedDescription)")
-//            errorMessage = "Error cargando estadísticas: \(error.localizedDescription)"
-//        }
-//    }
+    @MainActor
+    private func fetchBusinessStats(for businessID: String) async {
+        do {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM"
+            let currentPeriod = dateFormatter.string(from: Date())
+            
+            // Simplificamos la consulta para no requerir índice compuesto
+            let stats = try await FirebaseManager.shared.getDocuments(
+                from: "businessStats",
+                whereField: "businessId",
+                isEqualTo: businessID,
+                limit: 10,
+                as: BusinessStats.self
+            )
+            
+            if !stats.isEmpty {
+                // Ordenar manualmente por período y tomar el más reciente
+                let sortedStats = stats.sorted { $0.period > $1.period }
+                self.businessStats = sortedStats.first
+            } else {
+                // Create default stats for demo
+                await createDefaultStats(for: businessID)
+            }
+        } catch {
+            print("Error fetching business stats: \(error.localizedDescription)")
+            // Si falla la consulta, crear stats por defecto
+            await createDefaultStats(for: businessID)
+        }
+    }
     
     func startBalanceListener(for accountID: String) {
         stopBalanceListener()
@@ -344,6 +381,115 @@ class HomeViewModel: ObservableObject {
     func stopBalanceListener() {
         listenerRegistration?.remove()
         listenerRegistration = nil
+    }
+    
+    // MARK: - Transaction Management
+    
+    /// Guarda una nueva transacción y actualiza las estadísticas
+    @MainActor
+    func saveTransaction(description: String, amount: Double, type: TransactionType, category: String?, paymentMethod: String?) async -> Bool {
+        guard let accountID = account?.id else {
+            print("No account ID available to save transaction")
+            return false
+        }
+        
+        let newTransaction = Transaction(
+            accountId: accountID,
+            description: description,
+            amount: amount,
+            date: Date(),
+            type: type,
+            category: category,
+            paymentMethod: paymentMethod
+        )
+        
+        do {
+            // Guardar transacción en Firebase
+            _ = try await FirebaseManager.shared.createDocument(
+                in: "transactions",
+                data: newTransaction
+            )
+            
+            print("✅ Transaction saved successfully: \(description) - $\(amount)")
+            
+            // Actualizar balance de la cuenta
+            if let accountID = account?.id {
+                let newBalance = (account?.balance ?? 0) + amount
+                try await updateAccountBalance(accountID: accountID, newBalance: newBalance)
+            }
+            
+            // Actualizar estadísticas del negocio
+            if let businessID = business?.id {
+                await updateBusinessStats(businessID: businessID, amount: amount, type: type)
+            }
+            
+            // Refrescar datos locales
+            await refreshData()
+            
+            return true
+        } catch {
+            print("❌ Error saving transaction: \(error.localizedDescription)")
+            errorMessage = "Error al guardar la transacción: \(error.localizedDescription)"
+            return false
+        }
+    }
+    
+    /// Actualiza el balance de la cuenta
+    private func updateAccountBalance(accountID: String, newBalance: Double) async throws {
+        let accountRef = db.collection("accounts").document(accountID)
+        try await accountRef.updateData(["balance": newBalance])
+        print("✅ Account balance updated to: $\(newBalance)")
+    }
+    
+    /// Actualiza las estadísticas del negocio
+    @MainActor
+    private func updateBusinessStats(businessID: String, amount: Double, type: TransactionType) async {
+        guard let currentStats = businessStats else {
+            print("No business stats available to update")
+            return
+        }
+        
+        do {
+            let statsRef = db.collection("businessStats").document(currentStats.id ?? "")
+            
+            var updates: [String: Any] = [:]
+            
+            if type == .income {
+                let newTotalSales = currentStats.totalSales + amount
+                updates["totalSales"] = newTotalSales
+            } else {
+                let newTotalExpenses = currentStats.totalExpenses + abs(amount)
+                updates["totalExpenses"] = newTotalExpenses
+            }
+            
+            let newTransactionCount = currentStats.transactionCount + 1
+            updates["transactionCount"] = newTransactionCount
+            
+            try await statsRef.updateData(updates)
+            print("✅ Business stats updated successfully")
+            
+        } catch {
+            print("❌ Error updating business stats: \(error.localizedDescription)")
+        }
+    }
+    
+    /// Refresca todos los datos sin mostrar el loading
+    @MainActor
+    func refreshData() async {
+        guard let businessID = business?.id else {
+            print("No business ID available for refresh")
+            return
+        }
+        
+        print("🔄 Refreshing data...")
+        
+        // Refrescar cuenta y transacciones
+        await fetchAccount(for: businessID)
+        
+        // Refrescar estadísticas
+        await fetchBusinessStats(for: businessID)
+        
+        print("✅ Data refreshed successfully")
     }
     
     deinit {

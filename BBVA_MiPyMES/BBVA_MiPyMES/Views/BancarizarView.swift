@@ -1,8 +1,3 @@
-//
-//  ContentView.swift
-//  BBVA_MiPyMES
-//
-//  Created by Ruy Cabello on 13/05/25.
 
 import SwiftUI
 
@@ -445,13 +440,6 @@ struct ConfettiParticle: Identifiable {
     let color: Color
     var angle: Double
     let scale: CGFloat
-}
-
-// Extension to support rounded corners on specific edges
-extension View {
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape(RoundedCornerShape(radius: radius, corners: corners))
-    }
 }
 
 

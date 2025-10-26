@@ -1,16 +1,4 @@
-//
-//  SettingsView.swift
-//  BBVA_MiPyMES
-//
-//  Created by Alejandro Gutiérrez Grimaldo on 13/05/25.
-//
 
-//
-//  SettingsView.swift
-//  BBVA_MiPyMES
-//
-//  Created by Alejandro Gutiérrez Grimaldo on 14/05/25. // Or your actual creation date
-//
 
 import SwiftUI
 import Firebase // Import Firebase if needed for any specific Firebase types, though often just the ViewModel handles it
@@ -20,10 +8,9 @@ struct SettingsView: View {
     // This ViewModel must be provided higher up in your app's view hierarchy
     @EnvironmentObject var authViewModel: AuthenticationViewModel
 
-    // BBVA Colors (optional, you can reuse them from HomeView or define globally)
-     let bbvaBlue = Color(red: 0.004, green: 0.345, blue: 0.663)
-     let bbvaDarkBlue = Color(red: 0, green: 0.216, blue: 0.416)
-     let bbvaBackground = Color(red: 0.95, green: 0.97, blue: 0.98)
+    // Usar colores globales de BBVA
+    let BBVABlue = Color.BBVAPrimaryRed
+    let BBVABackground = Color.BBVABackground
 
 
     var body: some View {
@@ -58,7 +45,7 @@ struct SettingsView: View {
 
             }
             .navigationTitle("Ajustes") // Set the title for the view
-            .background(bbvaBackground.edgesIgnoringSafeArea(.all)) // Apply BBVA background if desired
+            .background(BBVABackground.edgesIgnoringSafeArea(.all)) // Apply BBVA background if desired
         }
     }
 }

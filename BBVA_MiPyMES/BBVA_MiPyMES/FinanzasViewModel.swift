@@ -1,9 +1,3 @@
-//
-//  FinanzasViewModel.swift
-//  BBVA_MiPyMES
-//
-//  Created by Carolina Sotelo on 13/05/25.
-//
 
 import SwiftUI
 
@@ -32,7 +26,7 @@ class FinanzasViewModel: ObservableObject {
             ),
             Transaccion(
                 descripcion: "Venta POS Tienda",
-                monto: 12200,
+                monto: 50000,
                 fecha: calendario.date(byAdding: .day, value: -2, to: hoy)!,
                 tipo: "ingreso",
                 icono: "creditcard.fill"
